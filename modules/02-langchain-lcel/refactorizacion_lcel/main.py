@@ -76,26 +76,53 @@ async def process_question(question: str) -> str:
 
 
 async def main():
-    """Punto de entrada principal del programa."""
+    """Punto de entrada principal con batería de pruebas."""
 
     print("=" * 60)
     print("Módulo 2 - Refactorización a LCEL Asíncrono")
     print("=" * 60)
 
-    # Pregunta de ejemplo
-    question = "¿Qué es LCEL en LangChain y cuáles son sus ventajas principales?"
+    # Batería de preguntas de prueba
+    test_questions = [
+        "¿Qué es LCEL en LangChain y cuáles son sus ventajas principales?",
+        "Explica brevemente qué es el operador pipe (|) en LCEL.",
+        "¿Cuál es la diferencia entre invoke y ainvoke en LangChain?",
+    ]
 
-    print(f"\nPregunta: {question}")
-    print("-" * 60)
+    passed = 0
+    failed = 0
 
-    try:
-        response = await process_question(question)
-        print(f"\nRespuesta:\n{response}")
-    except Exception as e:
-        print(f"\nError al ejecutar la cadena: {type(e).__name__}: {e}")
+    for i, question in enumerate(test_questions, 1):
+        print(f"\n{'─' * 60}")
+        print(f"Prueba {i}/{len(test_questions)}")
+        print(f"Pregunta: {question}")
+        print(f"{'─' * 60}")
 
-    print("\n" + "=" * 60)
-    print("Ejecución finalizada.")
+        try:
+            response = await process_question(question)
+
+            # Verificación: la salida debe ser texto plano (str), no AIMessage
+            assert isinstance(response, str), (
+                f"Se esperaba str, se obtuvo {type(response).__name__}"
+            )
+            assert len(response) > 0, "La respuesta está vacía"
+
+            print(f"\nRespuesta:\n{response}")
+            print(f"\n✅ Prueba {i} superada — Tipo: {type(response).__name__}")
+            passed += 1
+
+        except Exception as e:
+            print(f"\n❌ Prueba {i} fallida — {type(e).__name__}: {e}")
+            failed += 1
+
+    # Resumen final
+    print(f"\n{'=' * 60}")
+    print(f"Resultado: {passed}/{len(test_questions)} pruebas superadas")
+    if failed == 0:
+        print("✅ Todas las pruebas pasaron correctamente.")
+    else:
+        print(f"⚠️ {failed} prueba(s) fallida(s).")
+    print(f"{'=' * 60}")
 
 
 if __name__ == "__main__":

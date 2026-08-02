@@ -1,0 +1,67 @@
+Ética y Gobernanza de la IA en el Entorno Empresarial
+
+La implementación responsable de inteligencia artificial en las empresas requiere un
+marco de gobernanza que aborde los riesgos éticos, legales y reputacionales asociados
+al uso de algoritmos en la toma de decisiones. La IA ética no es solo una aspiración
+moral, sino una necesidad operativa y regulatoria.
+
+Sesgo Algorítmico y Equidad
+
+El sesgo algorítmico ocurre cuando un modelo de IA produce resultados sistemáticamente
+injustos para ciertos grupos de personas. Las fuentes de sesgo incluyen datos de
+entrenamiento no representativos, variables proxy que codifican discriminación histórica
+y funciones objetivo que optimizan métricas sin considerar la equidad.
+
+Un caso emblemático es el algoritmo de contratación de Amazon que fue descontinuado
+en 2018 porque penalizaba currículos que incluían palabras asociadas al género femenino.
+El modelo había aprendido de diez años de datos históricos de contratación, donde la
+mayoría de los empleados eran hombres, replicando y amplificando el sesgo existente.
+
+Para mitigar el sesgo, las empresas deben implementar auditorías periódicas de equidad
+utilizando métricas como disparate impact ratio, equalized odds y calibración por
+grupo. Herramientas de código abierto como Fairlearn de Microsoft y AI Fairness 360
+de IBM facilitan la detección y mitigación de sesgos en modelos de machine learning.
+
+Transparencia y Explicabilidad
+
+La transparencia algorítmica implica que las empresas deben poder explicar cómo sus
+sistemas de IA toman decisiones, especialmente cuando esas decisiones afectan
+significativamente a las personas. El Reglamento General de Protección de Datos (GDPR)
+de la Unión Europea establece el derecho a una explicación cuando una decisión
+automatizada tiene efectos legales o significativos sobre un individuo.
+
+Las técnicas de IA explicable (XAI) se dividen en dos categorías: métodos intrínsecos
+(modelos interpretables por naturaleza como árboles de decisión y regresión logística)
+y métodos post-hoc (que explican modelos complejos después de su entrenamiento, como
+SHAP, LIME y Attention Maps).
+
+La recomendación para empresas es mantener un registro de decisiones algorítmicas
+(model cards) que documente el propósito del modelo, los datos de entrenamiento, las
+métricas de rendimiento por grupo demográfico y las limitaciones conocidas.
+
+Privacidad de Datos y Cumplimiento Regulatorio
+
+La IA empresarial depende de grandes volúmenes de datos, lo que genera tensiones con
+las regulaciones de privacidad. El GDPR en Europa, la CCPA en California y la LGPD en
+Brasil imponen restricciones sobre la recolección, procesamiento y almacenamiento de
+datos personales.
+
+Las técnicas de privacidad preservante incluyen: federación de datos (Federated Learning),
+donde el modelo viaja a los datos en lugar de centralizar la información; privacidad
+diferencial (Differential Privacy), que agrega ruido estadístico para proteger registros
+individuales; y anonimización avanzada, que va más allá de eliminar nombres e incluye
+la supresión de cuasi-identificadores que podrían permitir la reidentificación.
+
+Marco de Gobernanza de IA
+
+Un marco de gobernanza de IA efectivo incluye los siguientes componentes: un comité de
+ética de IA con representación multidisciplinaria (tecnología, legal, negocio, RRHH);
+políticas claras sobre los casos de uso permitidos y prohibidos de IA; un proceso de
+evaluación de impacto algorítmico previo al despliegue de cada modelo; monitoreo
+continuo del rendimiento y la equidad de los modelos en producción; y canales de
+reporte para empleados y usuarios afectados por decisiones algorítmicas.
+
+Las empresas líderes como Google, Microsoft e IBM han publicado principios de IA
+responsable que incluyen compromisos de equidad, transparencia, privacidad y seguridad.
+Estos principios deben traducirse en procesos operativos concretos y en métricas
+medibles para tener un impacto real en la organización.

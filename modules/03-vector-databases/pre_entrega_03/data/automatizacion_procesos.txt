@@ -1,0 +1,63 @@
+Automatización Inteligente de Procesos Empresariales
+
+La automatización de procesos con inteligencia artificial va más allá de la RPA
+(Robotic Process Automation) tradicional. Mientras que la RPA replica acciones humanas
+repetitivas siguiendo reglas fijas, la automatización inteligente incorpora capacidades
+cognitivas que permiten manejar excepciones, interpretar documentos no estructurados
+y tomar decisiones basadas en contexto.
+
+Procesamiento Inteligente de Documentos (IDP)
+
+El procesamiento inteligente de documentos combina OCR (reconocimiento óptico de
+caracteres) con modelos de comprensión de lenguaje natural para extraer información
+de facturas, contratos, formularios y correspondencia. A diferencia del OCR
+tradicional, los sistemas IDP pueden interpretar el significado del texto extraído,
+clasificar documentos automáticamente y validar la información contra bases de datos
+internas.
+
+Un caso de uso frecuente es la automatización de cuentas por pagar: el sistema recibe
+una factura por correo electrónico, extrae los campos relevantes (proveedor, monto,
+fecha de vencimiento, items), valida contra la orden de compra correspondiente y genera
+el asiento contable de forma automática. Las empresas que implementan IDP reportan
+reducciones del 60 al 80 por ciento en el tiempo de procesamiento de documentos.
+
+Atención al Cliente Automatizada
+
+La automatización del servicio al cliente con IA trasciende los chatbots básicos.
+Los sistemas modernos incluyen clasificación automática de tickets por urgencia y
+tema, enrutamiento inteligente al agente más capacitado, generación de respuestas
+sugeridas y análisis de sentimiento en tiempo real.
+
+El análisis de sentimiento permite identificar clientes frustrados antes de que
+escalen su reclamo, activando protocolos de retención proactiva. Los modelos de
+clasificación de texto como BERT y sus variantes pueden detectar emociones con
+una precisión superior al 85 por ciento en interacciones de texto.
+
+Las empresas que implementan IA en su servicio al cliente reportan mejoras del 25
+por ciento en la satisfacción del cliente (CSAT) y reducciones del 40 por ciento
+en el tiempo promedio de resolución de tickets.
+
+Optimización de Cadena de Suministro
+
+La IA aplicada a la cadena de suministro permite optimizar rutas de distribución,
+predecir disrupciones y automatizar la gestión de inventarios. Los algoritmos de
+optimización combinatoria resuelven problemas de ruteo de vehículos considerando
+restricciones de capacidad, ventanas de tiempo y costos de combustible.
+
+Los modelos predictivos de disrupciones analizan datos climáticos, geopolíticos y
+de mercado para anticipar posibles interrupciones en la cadena de abastecimiento.
+Empresas como Unilever y Procter and Gamble utilizan estos sistemas para mantener
+planes de contingencia actualizados y reducir el impacto de eventos imprevistos.
+
+Screening y Selección de Talento
+
+En recursos humanos, la IA se aplica para filtrar currículos, evaluar compatibilidad
+cultural y predecir el desempeño potencial de candidatos. Los modelos de procesamiento
+de lenguaje natural analizan las experiencias y habilidades descritas en los CVs y
+las comparan con los requisitos del puesto.
+
+Es fundamental implementar auditorías periódicas de sesgo en estos sistemas para
+evitar discriminación algorítmica por género, edad, origen étnico u otras variables
+protegidas. Las mejores prácticas incluyen el uso de datasets de entrenamiento
+balanceados y la revisión humana de las decisiones automatizadas en las etapas
+finales del proceso de selección.

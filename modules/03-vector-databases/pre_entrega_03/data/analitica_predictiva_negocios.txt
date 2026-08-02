@@ -1,0 +1,67 @@
+Analítica Predictiva para Decisiones de Negocio
+
+La analítica predictiva utiliza técnicas de machine learning y estadística avanzada
+para anticipar resultados futuros a partir de datos históricos. A diferencia de la
+analítica descriptiva (qué pasó) y la diagnóstica (por qué pasó), la predictiva
+responde a la pregunta: qué es probable que suceda.
+
+Predicción de Abandono de Clientes (Churn)
+
+El churn prediction es una de las aplicaciones más valiosas de la IA en negocios.
+Identificar clientes con alta probabilidad de abandonar el servicio permite activar
+estrategias de retención antes de que la cancelación ocurra. Los modelos de churn
+más efectivos combinan variables transaccionales (frecuencia de compra, monto
+promedio, tiempo desde la última compra) con variables de comportamiento (uso del
+producto, interacciones con soporte, engagement con comunicaciones).
+
+Los modelos de clasificación binaria como XGBoost, LightGBM y redes neuronales
+son los más utilizados para churn prediction. La métrica clave es el recall (sensibilidad),
+ya que es más costoso perder un cliente que invertir en retener uno que en realidad
+no iba a abandonar. Un modelo de churn efectivo debe alcanzar un recall mínimo del
+75 por ciento para ser operativamente útil.
+
+Las empresas de telecomunicaciones, banca y SaaS son las que más se benefician de
+estos modelos. En el sector SaaS, la implementación de modelos de churn combinados
+con acciones de retención proactiva reduce la tasa de abandono entre un 15 y un 30
+por ciento.
+
+Análisis de Tendencias de Mercado
+
+Los modelos de IA pueden procesar grandes volúmenes de datos no estructurados como
+noticias, reportes financieros, publicaciones en redes sociales y datos de búsqueda
+para identificar tendencias emergentes en el mercado. Las técnicas de topic modeling
+(LDA, BERTopic) permiten descubrir temas relevantes en grandes corpus de texto, mientras
+que el análisis de series temporales identifica patrones estacionales y cambios
+estructurales en la demanda.
+
+Las empresas de consultoría estratégica y los fondos de inversión utilizan estas
+herramientas para anticipar movimientos del mercado y ajustar sus estrategias
+con semanas o meses de anticipación.
+
+Scoring de Riesgo Crediticio
+
+La evaluación de riesgo crediticio con IA incorpora variables no tradicionales al
+análisis: historial de pagos de servicios, comportamiento en redes sociales, datos
+de dispositivos móviles y patrones de consumo. Estos modelos permiten evaluar la
+solvencia de personas sin historial crediticio formal, democratizando el acceso
+al crédito en mercados emergentes.
+
+Los modelos de scoring deben cumplir con regulaciones de transparencia algorítmica,
+como el derecho del solicitante a conocer las razones de un rechazo. Las técnicas
+de IA explicable (XAI) como SHAP y LIME permiten generar explicaciones comprensibles
+de las decisiones del modelo, cumpliendo con marcos regulatorios como el GDPR en
+Europa y la Ley de Igualdad de Oportunidades Crediticias en Estados Unidos.
+
+Optimización de Precios (Dynamic Pricing)
+
+La fijación dinámica de precios utiliza modelos de IA para ajustar precios en tiempo
+real según la demanda, la competencia, la estacionalidad y la elasticidad precio de
+cada segmento de clientes. Aerolíneas, hoteles y plataformas de comercio electrónico
+son los sectores donde esta técnica tiene mayor adopción.
+
+Los modelos de pricing más sofisticados utilizan aprendizaje por refuerzo (Reinforcement
+Learning) para encontrar el precio óptimo que maximiza los ingresos a largo plazo,
+considerando el efecto que los cambios de precio tienen en la lealtad del cliente y
+la percepción de marca. La implementación requiere monitoreo constante para evitar
+prácticas de discriminación de precios que puedan generar problemas legales o daño
+reputacional.

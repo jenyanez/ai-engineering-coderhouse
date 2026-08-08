@@ -22,7 +22,7 @@ El curso propone un recorrido incremental: cada módulo incorpora una nueva capa
 | 1 | La interfaz base: conexión y abstracción de LLMs | 6 | `asyncio`, SDKs, concurrencia | ✅ Completado |
 | 2 | Encadenamiento lógico: orquestación con LangChain | 6 | LangChain, LCEL, cadenas lógicas | ✅ Completado |
 | 3 | Persistencia de datos y bases de datos vectoriales | 6 | Embeddings, ChromaDB, RAG básico | ✅ Completado |
-| 4 | Escalabilidad documental: RAG avanzado y Pinecone | 6 | Pinecone, procesamiento documental | ⏳ Pendiente |
+| 4 | Escalabilidad documental: RAG avanzado y Pinecone | 6 | Pinecone, procesamiento documental | ✅ Completado |
 | 5 | Razonamiento autónomo: agentes con LangGraph | 6 | LangGraph, herramientas, estado | ⏳ Pendiente |
 | 6 | Sistemas multiagente: colaboración y especialización | 7 | Supervisor, jerarquías, delegación | ⏳ Pendiente |
 | 7 | Producción y robustez: observabilidad, costos y despliegue | 5 | Trazabilidad, APIs, deploy | ⏳ Pendiente |
@@ -47,6 +47,7 @@ ai-engineering-coderhouse/
 │   │   ├── practica_embeddings_similitud/
 │   │   └── pre_entrega_03/
 │   ├── 04-advanced-rag/
+│   │   └── pre_entrega_04/
 │   ├── 05-langgraph-agents/
 │   ├── 06-multi-agent/
 │   └── 07-production/
@@ -58,7 +59,7 @@ ai-engineering-coderhouse/
 - [x] **Módulo 1 — La interfaz base: conexión y abstracción de LLMs** (Orquestador Concurrente + Pre-entrega 1)
 - [x] **Módulo 2 — Encadenamiento lógico: orquestación con LangChain** (Refactorización LCEL + Pre-entrega 2)
 - [x] **Módulo 3 — Persistencia de datos y bases de datos vectoriales** (Práctica Embeddings + Pre-entrega 3)
-- [ ] **Módulo 4 — Escalabilidad documental: RAG avanzado y Pinecone**
+- [x] **Módulo 4 — Escalabilidad documental: RAG avanzado y Pinecone** (Sistema RAG Escalable en Pinecone + Pre-entrega 4)
 - [ ] **Módulo 5 — Razonamiento autónomo: agentes con LangGraph**
 - [ ] **Módulo 6 — Sistemas multiagente: colaboración y especialización**
 - [ ] **Módulo 7 — Producción y robustez: observabilidad, costos y despliegue**

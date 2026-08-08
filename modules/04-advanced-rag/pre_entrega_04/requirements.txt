@@ -1,0 +1,11 @@
+langchain
+langchain-openai
+langchain-pinecone
+langchain-community
+pinecone
+pydantic
+python-dotenv
+tiktoken
+rank-bm25
+tenacity
+

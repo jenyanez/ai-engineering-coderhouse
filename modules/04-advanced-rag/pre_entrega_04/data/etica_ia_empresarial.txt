@@ -1,0 +1,114 @@
+Ética y Gobernanza de la IA en el Entorno Empresarial
+
+La implementación responsable de inteligencia artificial en las empresas requiere un
+marco de gobernanza que aborde los riesgos éticos, legales y reputacionales asociados
+al uso de algoritmos en la toma de decisiones. La IA ética no es solo una aspiración
+moral, sino una necesidad operativa y regulatoria. Según una encuesta de Deloitte, el
+56 por ciento de las empresas que adoptan IA reportan haber enfrentado al menos un
+incidente ético en los primeros dos años de implementación.
+
+Sesgo Algorítmico y Equidad
+
+El sesgo algorítmico ocurre cuando un modelo de IA produce resultados sistemáticamente
+injustos para ciertos grupos de personas. Las fuentes de sesgo incluyen datos de
+entrenamiento no representativos, variables proxy que codifican discriminación histórica
+y funciones objetivo que optimizan métricas sin considerar la equidad.
+
+Un caso emblemático es el algoritmo de contratación de Amazon que fue descontinuado
+en 2018 porque penalizaba currículos que incluían palabras asociadas al género femenino.
+El modelo había aprendido de diez años de datos históricos de contratación, donde la
+mayoría de los empleados eran hombres, replicando y amplificando el sesgo existente.
+
+Para mitigar el sesgo, las empresas deben implementar auditorías periódicas de equidad
+utilizando métricas como disparate impact ratio, equalized odds y calibración por
+grupo. Herramientas de código abierto como Fairlearn de Microsoft y AI Fairness 360
+de IBM facilitan la detección y mitigación de sesgos en modelos de machine learning.
+
+Otro caso relevante es el de los algoritmos de riesgo criminal COMPAS, utilizados en
+el sistema judicial de Estados Unidos, que mostraron tasas de falsos positivos
+significativamente más altas para personas afroamericanas. Este caso generó un debate
+global sobre la responsabilidad algorítmica y la necesidad de supervisión humana en
+decisiones de alto impacto. La organización ProPublica publicó una investigación
+detallada que reveló que el algoritmo era dos veces más propenso a etiquetar
+incorrectamente a acusados negros como de alto riesgo de reincidencia.
+
+Transparencia y Explicabilidad
+
+La transparencia algorítmica implica que las empresas deben poder explicar cómo sus
+sistemas de IA toman decisiones, especialmente cuando esas decisiones afectan
+significativamente a las personas. El Reglamento General de Protección de Datos (GDPR)
+de la Unión Europea establece el derecho a una explicación cuando una decisión
+automatizada tiene efectos legales o significativos sobre un individuo.
+
+Las técnicas de IA explicable (XAI) se dividen en dos categorías: métodos intrínsecos
+(modelos interpretables por naturaleza como árboles de decisión y regresión logística)
+y métodos post-hoc (que explican modelos complejos después de su entrenamiento, como
+SHAP, LIME y Attention Maps).
+
+La recomendación para empresas es mantener un registro de decisiones algorítmicas
+(model cards) que documente el propósito del modelo, los datos de entrenamiento, las
+métricas de rendimiento por grupo demográfico y las limitaciones conocidas.
+
+Google ha propuesto el estándar de Model Cards como un documento estructurado que
+acompaña a cada modelo de IA en producción. Este documento incluye los datos usados
+para entrenar el modelo, las métricas de rendimiento desglosadas por subgrupos
+relevantes, los casos de uso previstos y los escenarios donde el modelo no debería
+utilizarse. Microsoft ha adoptado un enfoque similar con Datasheets for Datasets,
+que documentan la procedencia, composición y sesgos potenciales de los conjuntos
+de datos utilizados para entrenar modelos.
+
+Privacidad de Datos y Cumplimiento Regulatorio
+
+La IA empresarial depende de grandes volúmenes de datos, lo que genera tensiones con
+las regulaciones de privacidad. El GDPR en Europa, la CCPA en California y la LGPD en
+Brasil imponen restricciones sobre la recolección, procesamiento y almacenamiento de
+datos personales.
+
+Las técnicas de privacidad preservante incluyen: federación de datos (Federated Learning),
+donde el modelo viaja a los datos en lugar de centralizar la información; privacidad
+diferencial (Differential Privacy), que agrega ruido estadístico para proteger registros
+individuales; y anonimización avanzada, que va más allá de eliminar nombres e incluye
+la supresión de cuasi-identificadores que podrían permitir la reidentificación.
+
+Apple utiliza privacidad diferencial en su teclado predictivo y en Siri para mejorar
+los modelos de lenguaje sin acceder a los datos individuales de los usuarios. Google
+ha desarrollado RAPPOR y su sucesor PROCHLO para recopilar estadísticas de uso de
+Chrome de forma privada. El Federated Learning, desarrollado inicialmente por Google
+para mejorar la predicción del teclado Gboard, permite entrenar modelos de machine
+learning en dispositivos distribuidos sin centralizar los datos, preservando la
+privacidad de cada usuario.
+
+La regulación de IA está evolucionando rápidamente. La Ley de Inteligencia Artificial
+de la Unión Europea (EU AI Act) clasifica los sistemas de IA en cuatro niveles de
+riesgo (inaceptable, alto, limitado y mínimo) y establece requisitos diferenciados
+para cada categoría. Los sistemas de alto riesgo, como los utilizados en contratación,
+evaluación crediticia y justicia, deben cumplir con requisitos estrictos de documentación,
+transparencia y supervisión humana.
+
+Marco de Gobernanza de IA
+
+Un marco de gobernanza de IA efectivo incluye los siguientes componentes: un comité de
+ética de IA con representación multidisciplinaria (tecnología, legal, negocio, RRHH);
+políticas claras sobre los casos de uso permitidos y prohibidos de IA; un proceso de
+evaluación de impacto algorítmico previo al despliegue de cada modelo; monitoreo
+continuo del rendimiento y la equidad de los modelos en producción; y canales de
+reporte para empleados y usuarios afectados por decisiones algorítmicas.
+
+Las empresas líderes como Google, Microsoft e IBM han publicado principios de IA
+responsable que incluyen compromisos de equidad, transparencia, privacidad y seguridad.
+Estos principios deben traducirse en procesos operativos concretos y en métricas
+medibles para tener un impacto real en la organización.
+
+El concepto de Responsible AI (RAI) se está institucionalizando en las empresas con
+la creación de roles especializados como Chief AI Ethics Officer y equipos dedicados
+de AI Governance. Salesforce, por ejemplo, ha creado un Office of Ethical and Humane
+Use of Technology que revisa todos los productos de IA antes de su lanzamiento. Meta
+estableció un equipo de Responsible AI que desarrolló herramientas internas como
+Fairness Flow para evaluar automáticamente el sesgo en los modelos de recomendación
+de contenido.
+
+La rendición de cuentas algorítmica también implica la capacidad de realizar
+auditorías externas de los sistemas de IA. Organizaciones como ORCAA (O'Neil Risk
+Consulting and Algorithmic Auditing), fundada por la matemática Cathy O'Neil, ofrecen
+servicios de auditoría algorítmica que evalúan la equidad, precisión y transparencia
+de los modelos de IA empresariales.

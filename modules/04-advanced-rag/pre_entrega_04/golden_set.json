@@ -1,0 +1,122 @@
+[
+    {
+        "pregunta": "¿Cómo ayuda la IA a predecir el abandono de clientes (churn)?",
+        "chunk_id_esperado": "analitica_predictiva_negocios.txt"
+    },
+    {
+        "pregunta": "¿Qué modelos predictivos se usan para analizar el comportamiento del consumidor y el scoring de riesgo crediticio?",
+        "chunk_id_esperado": "analitica_predictiva_negocios.txt"
+    },
+    {
+        "pregunta": "¿Qué algoritmos de clasificación binaria son los más utilizados para predecir el churn en SaaS?",
+        "chunk_id_esperado": "analitica_predictiva_negocios.txt"
+    },
+    {
+        "pregunta": "¿Cómo utilizan las fintechs latinas como Nubank o Mercado Crédito la IA para el scoring crediticio?",
+        "chunk_id_esperado": "analitica_predictiva_negocios.txt"
+    },
+    {
+        "pregunta": "¿Qué técnicas de IA explicable (XAI) permiten justificar rechazos en scoring de riesgo crediticio?",
+        "chunk_id_esperado": "analitica_predictiva_negocios.txt"
+    },
+    {
+        "pregunta": "¿Cómo se aplica el aprendizaje por refuerzo en los modelos de fijación dinámica de precios (dynamic pricing)?",
+        "chunk_id_esperado": "analitica_predictiva_negocios.txt"
+    },
+    {
+        "pregunta": "¿Qué herramientas de topic modeling permiten descubrir tendencias emergentes en el análisis de mercado?",
+        "chunk_id_esperado": "analitica_predictiva_negocios.txt"
+    },
+    {
+        "pregunta": "¿Qué algoritmos de clustering no supervisado se utilizan para la segmentación avanzada de clientes?",
+        "chunk_id_esperado": "analitica_predictiva_negocios.txt"
+    },
+    {
+        "pregunta": "¿Qué es la automatización robótica de procesos (RPA) y en qué se diferencia de la automatización inteligente (IPA)?",
+        "chunk_id_esperado": "automatizacion_procesos.txt"
+    },
+    {
+        "pregunta": "¿Qué arquitecturas Transformer avanzadas como LayoutLM o Donut se utilizan en el Procesamiento Inteligente de Documentos (IDP)?",
+        "chunk_id_esperado": "automatizacion_procesos.txt"
+    },
+    {
+        "pregunta": "¿Cuánto tiempo de procesamiento de facturas y cuentas por pagar permite reducir el procesamiento inteligente de documentos?",
+        "chunk_id_esperado": "automatizacion_procesos.txt"
+    },
+    {
+        "pregunta": "¿Cómo influye el análisis de sentimiento en tiempo real en la atención al cliente automatizada?",
+        "chunk_id_esperado": "automatizacion_procesos.txt"
+    },
+    {
+        "pregunta": "¿De qué manera optimizan las empresas como Unilever y Procter & Gamble su cadena de suministro con IA?",
+        "chunk_id_esperado": "automatizacion_procesos.txt"
+    },
+    {
+        "pregunta": "¿En qué consiste el shipping anticipatorio utilizado por Amazon en la optimización de inventarios?",
+        "chunk_id_esperado": "automatizacion_procesos.txt"
+    },
+    {
+        "pregunta": "¿Qué herramientas de talent analytics permiten evaluar candidatos e identificar talento interno en RRHH?",
+        "chunk_id_esperado": "automatizacion_procesos.txt"
+    },
+    {
+        "pregunta": "¿Qué modelos de detección de anomalías como autoencoders e isolation forests ayudan a prevenir fraude financiero?",
+        "chunk_id_esperado": "automatizacion_procesos.txt"
+    },
+    {
+        "pregunta": "¿Cómo se usa la IA para personalizar ofertas de venta y qué modelos de recomendación existen?",
+        "chunk_id_esperado": "estrategia_ia_ventas.txt"
+    },
+    {
+        "pregunta": "¿Qué diferencia existe entre el lead scoring tradicional y el lead scoring predictivo basado en Machine Learning?",
+        "chunk_id_esperado": "estrategia_ia_ventas.txt"
+    },
+    {
+        "pregunta": "¿Cómo utiliza Netflix el deep learning y ensambles de modelos para personalizar miniaturas y recomendaciones?",
+        "chunk_id_esperado": "estrategia_ia_ventas.txt"
+    },
+    {
+        "pregunta": "¿Cómo funciona una arquitectura multi-agente en chatbots comerciales de ventas?",
+        "chunk_id_esperado": "estrategia_ia_ventas.txt"
+    },
+    {
+        "pregunta": "¿Qué modelos avanzados de series temporales como Temporal Fusion Transformer (TFT) o TimeGPT se usan en pronóstico de demanda?",
+        "chunk_id_esperado": "estrategia_ia_ventas.txt"
+    },
+    {
+        "pregunta": "¿Qué porcentaje de ingresos atribuye Amazon a su motor de recomendaciones personalizadas?",
+        "chunk_id_esperado": "estrategia_ia_ventas.txt"
+    },
+    {
+        "pregunta": "¿Qué función cumple el análisis de supervivencia (survival analysis) en la priorización de contactos de ventas?",
+        "chunk_id_esperado": "estrategia_ia_ventas.txt"
+    },
+    {
+        "pregunta": "¿Cuáles son los riesgos éticos del sesgo algorítmico en la inteligencia artificial empresarial?",
+        "chunk_id_esperado": "etica_ia_empresarial.txt"
+    },
+    {
+        "pregunta": "¿Qué ocurrió con el algoritmo de contratación de Amazon en 2018 y por qué fue descontinuado?",
+        "chunk_id_esperado": "etica_ia_empresarial.txt"
+    },
+    {
+        "pregunta": "¿Qué reveló la investigación de ProPublica sobre el algoritmo judicial COMPAS?",
+        "chunk_id_esperado": "etica_ia_empresarial.txt"
+    },
+    {
+        "pregunta": "¿En qué consisten los estándares Model Cards de Google y Datasheets for Datasets de Microsoft?",
+        "chunk_id_esperado": "etica_ia_empresarial.txt"
+    },
+    {
+        "pregunta": "¿Cuáles son las diferencias entre Federated Learning y Differential Privacy para la privacidad de datos?",
+        "chunk_id_esperado": "etica_ia_empresarial.txt"
+    },
+    {
+        "pregunta": "¿Cómo clasifica el riesgo la Ley de Inteligencia Artificial de la Unión Europea (EU AI Act)?",
+        "chunk_id_esperado": "etica_ia_empresarial.txt"
+    },
+    {
+        "pregunta": "¿Qué función cumple un comité de ética de IA y el rol de Chief AI Ethics Officer en la gobernanza empresarial?",
+        "chunk_id_esperado": "etica_ia_empresarial.txt"
+    }
+]

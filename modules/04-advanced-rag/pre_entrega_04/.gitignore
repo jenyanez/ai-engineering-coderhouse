@@ -1,0 +1,23 @@
+# Entorno virtual
+.venv/
+
+# Variables de entorno (contienen API keys)
+.env
+.env.local
+.env.production
+.env.development
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.idea/
+.vscode/
+
+# Notebooks
+*.ipynb
+
+# OS
+.DS_Store

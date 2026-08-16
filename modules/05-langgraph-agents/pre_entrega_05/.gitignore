@@ -1,0 +1,22 @@
+# Entorno virtual y Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+
+# Variables de entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Base de datos de checkpoints (generada en runtime)
+checkpoints.db
+
+# Archivos de sistema y editores
+.DS_Store
+.vscode/
+.idea/

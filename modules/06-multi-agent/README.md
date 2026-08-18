@@ -12,7 +12,6 @@ Diseño de sistemas en los que múltiples agentes especializados colaboran, dele
 * **Ejercicio:** Propuesta arquitectónica de un sistema multi-agente jerárquico (Patrón Supervisor) para atención de quejas de e-commerce en Twitter/X.
 * **Ubicación:** [`01_topologias_multiagente/`](./01_topologias_multiagente/)
   * [Propuesta Técnica en Markdown (`propuesta_arquitectura.md`)](./01_topologias_multiagente/propuesta_arquitectura.md)
-  * [Documento de Entrega en PDF (`propuesta_arquitectura.pdf`)](./01_topologias_multiagente/propuesta_arquitectura.pdf)
 
 ## Entregable
 

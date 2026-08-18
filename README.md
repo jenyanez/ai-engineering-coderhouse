@@ -24,7 +24,7 @@ El curso propone un recorrido incremental: cada módulo incorpora una nueva capa
 | 3 | Persistencia de datos y bases de datos vectoriales | 6 | Embeddings, ChromaDB, RAG básico | ✅ Completado |
 | 4 | Escalabilidad documental: RAG avanzado y Pinecone | 6 | Pinecone, procesamiento documental | ✅ Completado |
 | 5 | Razonamiento autónomo: agentes con LangGraph | 6 | LangGraph, herramientas, estado | ✅ Completado |
-| 6 | Sistemas multiagente: colaboración y especialización | 7 | Supervisor, jerarquías, delegación | ⏳ Pendiente |
+| 6 | Sistemas multiagente: colaboración y especialización | 7 | Supervisor, jerarquías, delegación | 🔄 En progreso |
 | 7 | Producción y robustez: observabilidad, costos y despliegue | 5 | Trazabilidad, APIs, deploy | ⏳ Pendiente |
 | 8 | Capstone: entrega final | 1 | Integración de todas las capas | ⏳ Pendiente |
 
@@ -51,6 +51,7 @@ ai-engineering-coderhouse/
 │   ├── 05-langgraph-agents/
 │   │   └── pre_entrega_05/
 │   ├── 06-multi-agent/
+│   │   └── 01_topologias_multiagente/
 │   └── 07-production/
 └── capstone/
 ```
@@ -62,7 +63,7 @@ ai-engineering-coderhouse/
 - [x] **Módulo 3 — Persistencia de datos y bases de datos vectoriales** (Práctica Embeddings + Pre-entrega 3)
 - [x] **Módulo 4 — Escalabilidad documental: RAG avanzado y Pinecone** (Sistema RAG Escalable en Pinecone + Pre-entrega 4)
 - [x] **Módulo 5 — Razonamiento autónomo: agentes con LangGraph** (Agente ReAct con Persistencia SQLite + Pre-entrega 5)
-- [ ] **Módulo 6 — Sistemas multiagente: colaboración y especialización**
+- [ ] **Módulo 6 — Sistemas multiagente: colaboración y especialización** (Unidad 1 completada)
 - [ ] **Módulo 7 — Producción y robustez: observabilidad, costos y despliegue**
 - [ ] **Capstone — Entrega final**
 

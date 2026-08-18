@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propuesta Arquitectónica: Sistema Multi-Agente Jerárquico — Coderhouse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --bg: #ffffff;
+      --bg-alt: #f8fafc;
+      --border: #e2e8f0;
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+      --accent: #7c3aed;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background-color: var(--bg);
+      line-height: 1.5;
+      font-size: 13.5px;
+      padding: 36px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+    }
+
+    .badge-container { display: flex; gap: 8px; margin-bottom: 10px; }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: #eff6ff;
+      color: var(--primary);
+      border: 1px solid #bfdbfe;
+    }
+    .badge.accent { background: #f5f3ff; color: var(--accent); border-color: #ddd6fe; }
+
+    h1 { font-size: 21px; font-weight: 800; color: #0f172a; line-height: 1.25; margin-bottom: 8px; }
+    .meta-info { font-size: 11.5px; color: var(--text-muted); display: flex; gap: 16px; margin-top: 6px; }
+
+    h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      margin-top: 24px;
+      margin-bottom: 14px;
+    }
+
+    h3 { font-size: 13.5px; font-weight: 600; color: #1e293b; margin-top: 16px; margin-bottom: 8px; }
+    h4 { font-size: 12.5px; font-weight: 600; color: #334155; margin-top: 10px; margin-bottom: 4px; }
+    p, ul, ol { margin-bottom: 10px; color: #334155; }
+    ul, ol { margin-left: 18px; }
+    li { margin-bottom: 4px; }
+    strong { color: #0f172a; }
+
+    .callout {
+      background: var(--bg-alt);
+      border-left: 4px solid var(--primary);
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      margin: 14px 0;
+      font-size: 12.5px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      background: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 12.5px;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      color: var(--code-text);
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      line-height: 1.45;
+      margin: 12px 0;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+
+    pre code { background-color: transparent; color: inherit; padding: 0; }
+
+    .ascii-box {
+      background-color: #f8fafc;
+      border: 1px solid var(--border);
+      color: #0f172a;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      line-height: 1.35;
+      padding: 12px;
+      border-radius: 6px;
+      white-space: pre;
+      margin: 12px 0;
+      overflow-x: auto;
+    }
+
+    @media print {
+      body { padding: 0; font-size: 10px; line-height: 1.4; max-width: 100%; }
+      header { margin-bottom: 10px; padding-bottom: 10px; }
+      h1 { font-size: 15px; margin-bottom: 4px; }
+      h2 { font-size: 12px; margin-top: 14px; margin-bottom: 6px; padding-bottom: 4px; page-break-after: avoid; }
+      h3 { font-size: 11px; margin-top: 10px; margin-bottom: 4px; page-break-after: avoid; }
+      h4 { font-size: 10px; margin-top: 6px; margin-bottom: 2px; page-break-after: avoid; }
+      .callout { padding: 8px 10px; margin: 8px 0; font-size: 9.5px; page-break-inside: avoid; }
+      .card { padding: 8px 10px; margin-bottom: 6px; page-break-inside: avoid; }
+      .ascii-box, pre { padding: 8px; margin: 8px 0; font-size: 8.5px; line-height: 1.3; page-break-inside: avoid; }
+      @page { margin: 1.0cm 1.2cm; size: A4 portrait; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge-container">
+      <span class="badge">AI Engineering • Coderhouse</span>
+      <span class="badge accent">Módulo 6 — Unidad 1</span>
+    </div>
+    <h1>Propuesta Arquitectónica: Sistema Multi-Agente Jerárquico para Atención al Cliente en E-Commerce (Twitter/X)</h1>
+    <div class="meta-info">
+      <span><strong>Documento:</strong> Propuesta de Diseño Técnico</span>
+      <span><strong>Patrón:</strong> Supervisor Jerárquico</span>
+      <span><strong>Framework:</strong> LangGraph</span>
+    </div>
+  </header>
+
+  <div class="callout">
+    <strong>Resumen Ejecutivo:</strong> Diseño técnico de un sistema multi-agente basado en una <strong>topología jerárquica (Patrón Supervisor)</strong> implementado sobre <strong>LangGraph</strong>. El sistema automatiza el triaje de quejas, la verificación del estado de pedidos en bases de datos y la redacción de respuestas personalizadas y seguras en Twitter/X, priorizando control determinista, trazabilidad y compuerta de calidad (<em>Quality Gate</em>).
+  </div>
+
+  <h2>1. Identificación y Definición de Roles</h2>
+  <p>La arquitectura desacopla el razonamiento en un <strong>nodo Supervisor central</strong> y <strong>tres agentes especialistas (Workers)</strong>:</p>
+
+  <div class="ascii-box">┌─────────────────────────────────────────────────────────────────┐
+│                      👑 SUPERVISOR AGENT                        │
+│          (Orquestador Central & Compuerta de Calidad)           │
+└───────────────┬─────────────────┬─────────────────┬─────────────┘
+                │                 │                 │
+        1. Infiere & Extrae       │         3. Redacta Borrador
+                │       2. Consulta Logística       │
+                ▼                 ▼                 ▼
+        ┌───────────────┐ ┌───────────────┐ ┌───────────────┐
+        │  🎭 Agente 1  │ │  📦 Agente 2  │ │  ✍️ Agente 3   │
+        │  Sentiment &  │ │    Order &    │ │  Response &   │
+        │ Triage Agent  │ │Logistics Agent│ │Compliance Ag. │
+        └───────────────┘ └───────────────┘ └───────────────┘</div>
+
+  <div class="card">
+    <div class="card-title">👑 1.1. Supervisor Agent (Orquestador Central / Director de Tráfico)</div>
+    <p><strong>Rol:</strong> Cerebro coordinador. No ejecuta tareas operativas directamente (evitando el anti-patrón de <em>Supervisor Todólogo</em>), sino que analiza el estado global, determina qué especialista interviene mediante <code>next_step</code> y realiza el control de calidad final (<em>Quality Gate</em>).</p>
+    <p><strong>Modelo Recomendado:</strong> <code>GPT-4o</code> o <code>Claude 3.5 Sonnet</code>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎭 1.2. Sentiment & Triage Agent (Analista de Sentimiento y Extracción)</div>
+    <p><strong>Rol:</strong> Especialista en NLP para clasificar emoción (positivo, neutro, negativo moderado, crítico), calcular urgencia (0.0 a 1.0) y extraer <code>#ORD-XXXXX</code> y <code>@usuario</code>.</p>
+    <p><strong>Modelo Recomendado:</strong> <code>GPT-4o-mini</code>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📦 1.3. Order & Logistics Agent (Especialista en Órdenes y Logística)</div>
+    <p><strong>Rol:</strong> Especialista en integración transaccional para consultar la base de datos de órdenes y la API de mensajería (DHL/FedEx) para recuperar estado de despacho y motivos de retraso.</p>
+    <p><strong>Modelo Recomendado:</strong> <code>GPT-4o-mini</code>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">✍️ 1.4. Response & Compliance Agent (Redactor y Cumplimiento)</div>
+    <p><strong>Rol:</strong> Especialista en tono empático de marca, límite estricto de 280 caracteres de Twitter/X y enmascaramiento de datos personales (PII).</p>
+    <p><strong>Modelo Recomendado:</strong> <code>GPT-4o-mini</code>.</p>
+  </div>
+
+  <h2>2. Definición de Herramientas Técnicas (Tooling Contract)</h2>
+
+  <h3>2.1. Herramientas del Sentiment & Triage Agent</h3>
+  <ul>
+    <li><strong><code>classify_sentiment_and_urgency(tweet_text: str)</code></strong>: Retorna <code>SentimentData(sentiment, urgency_score, category)</code>. Ante texto ambiguo o spam, asigna categoría <code>"DESCONOCIDO"</code> y urgencia <code>0.1</code>.</li>
+    <li><strong><code>extract_entities_pydantic(tweet_text: str)</code></strong>: Retorna <code>EntitiesData(order_id, customer_handle)</code>. Si no detecta ID, retorna <code>order_id = None</code> para solicitarlo por DM.</li>
+  </ul>
+
+  <h3>2.2. Herramientas del Order & Logistics Agent</h3>
+  <ul>
+    <li><strong><code>query_order_db(order_id: str)</code></strong>: Retorna <code>OrderRecord(status, tracking_id, customer_id, order_exists)</code>. Si no existe, retorna <code>order_exists = False</code> sin romper el flujo.</li>
+    <li><strong><code>get_courier_tracking_info(tracking_id: str)</code></strong>: Retorna <code>CourierStatus(carrier, location, eta, delay_reason)</code>. Ante caídas de API aplica <em>Degradación Grácil</em> con datos en caché.</li>
+  </ul>
+
+  <h3>2.3. Herramientas del Response & Compliance Agent</h3>
+  <ul>
+    <li><strong><code>twitter_length_formatter(draft: str)</code></strong>: Retorna <code>FormattedTweet(final_text, char_count, is_valid)</code>. Trunca respetando límites de palabras y agrega llamada a DM si excede 280 caracteres.</li>
+    <li><strong><code>pii_sanitizer_filter(text: str)</code></strong>: Retorna <code>CleanText(sanitized_text, pii_detected)</code>. Enmascara automáticamente tarjetas (<code>****-1234</code>), correos y documentos.</li>
+  </ul>
+
+  <h2>3. Esquema de Estado y Flujo Lógico</h2>
+
+  <h3>3.1. Esquema del Estado Global (CustomerSupportState)</h3>
+  <pre><code>from typing import Annotated, Literal, Optional, TypedDict
+from langchain_core.messages import BaseMessage
+from langgraph.graph.message import add_messages
+from pydantic import BaseModel, Field
+
+class SentimentPayload(BaseModel):
+    sentiment: Literal["POSITIVO", "NEUTRO", "NEGATIVO_MODERADO", "NEGATIVO_CRÍTICO"]
+    urgency_score: float = Field(ge=0.0, le=1.0)
+    category: str
+    order_id: Optional[str] = None
+    customer_handle: str
+
+class LogisticsPayload(BaseModel):
+    order_exists: bool
+    status: str
+    tracking_url: Optional[str] = None
+    delay_reason: Optional[str] = None
+    estimated_delivery: Optional[str] = None
+
+class ResponsePayload(BaseModel):
+    tweet_text: str
+    char_count: int
+    invites_to_dm: bool
+    requires_human_approval: bool
+
+class CustomerSupportState(TypedDict):
+    messages: Annotated[list[BaseMessage], add_messages]
+    raw_tweet: str
+    sentiment_data: Optional[SentimentPayload]
+    logistics_data: Optional[LogisticsPayload]
+    response_data: Optional[ResponsePayload]
+    next_step: Literal["triage_agent", "logistics_agent", "response_agent", "publish_tweet", "human_escalation", "END"]
+    iteration_count: int
+    is_escalated: bool</code></pre>
+
+  <h3>3.2. Diagrama de Flujo del Grafo en LangGraph</h3>
+  <div class="ascii-box">[▶ Webhook: Tweet Entrante]
+            │
+            ▼
+    ┌───────────────┐
+    │ 👑 Supervisor │ ◄───────────────────────────┐
+    └───────┬───────┘                             │
+            │                                     │ (Retorna Estado)
+     ¿next_step?                                  │
+            ├─► [🎭 Sentiment & Triage Agent] ────┤
+            ├─► [📦 Order & Logistics Agent] ─────┤
+            ├─► [✍️ Response & Compliance Agent] ─┘
+            │
+    Decisión de Salida:
+            ├─► [🚀 Publicador Twitter/X] ──► [⏹️ END: Tweet Publicado]
+            └─► [🚨 Escalamiento Humano]  ──► [⏹️ END: Ticket Creado]</div>
+
+  <h3>3.3. Secuencia Paso a Paso de Transferencia de Estado</h3>
+  <ol>
+    <li><strong>Paso 1 (Ingesta):</strong> Llega el tweet. El Supervisor inicializa el estado y enruta a <code>next_step = "triage_agent"</code>.</li>
+    <li><strong>Paso 2 (Triage):</strong> Ejecuta análisis emocional. Mutación: <code>"sentiment_data": {"sentiment": "NEGATIVO_CRÍTICO", "urgency_score": 0.95, "order_id": "ORD-4491", ...}</code>.</li>
+    <li><strong>Paso 3 (Decisión Intermedia):</strong> El Supervisor detecta ID de orden y enruta a <code>next_step = "logistics_agent"</code>.</li>
+    <li><strong>Paso 4 (Logística):</strong> Consulta DB y courier. Mutación: <code>"logistics_data": {"order_exists": true, "status": "RETRASADO", "estimated_delivery": "Mañana 14:00hs", ...}</code>.</li>
+    <li><strong>Paso 5 (Redacción):</strong> El redactor genera el mensaje. Mutación: <code>"response_data": {"tweet_text": "Hola @cliente_enojado...", "char_count": 168, ...}</code>.</li>
+    <li><strong>Paso 6 (Quality Gate & Publicación):</strong> El Supervisor valida el cumplimiento y aprueba: <code>next_step = "publish_tweet"</code> &rarr; <code>END</code>.</li>
+  </ol>
+
+  <h2>4. Justificación Arquitectónica: Jerarquía vs Cooperación</h2>
+  <ul>
+    <li><strong>1. Mitigación de Riesgos de Marca:</strong> En topología jerárquica el Supervisor es un <em>Quality Gate</em> centralizado obligatorio. En una red cooperativa cualquier agente podría publicar directamente exponiendo la marca a alucinaciones.</li>
+    <li><strong>2. Determinismo del Flujo:</strong> El Supervisor impone un orden protocolar estricto (Triaje &rarr; Logística &rarr; Redacción &rarr; Validación).</li>
+    <li><strong>3. Control de Bucles (Anti-Loop):</strong> Previene ciclos infinitos mediante contadores de recursión centralizados.</li>
+    <li><strong>4. Eficiencia de Costos:</strong> Modelos heterogéneos (<code>GPT-4o</code> en Supervisor y <code>GPT-4o-mini</code> en Workers) permiten ahorrar más del 70% en costos de inferencia.</li>
+    <li><strong>5. Mínimo Privilegio:</strong> Aislamiento estricto de datos; el redactor no tiene acceso directo a la base de datos de pedidos.</li>
+  </ul>
+
+  <h2>5. Matriz de Casos Borde y Resiliencia (Edge Cases)</h2>
+  <div class="ascii-box">[📥 Evento Entrante] ──► [Evaluación de Casos Borde]
+                                │
+    ┌───────────────────────────┼───────────────────────────┐
+    ▼                           ▼                           ▼
+[Sin #PedidoID]       [Crisis / Amenaza Legal]     [Timeout API Courier]
+    │                           │                           │
+    ▼                           ▼                           ▼
+(Bypass Logística:      (Bypass Agéntico:           (Degradación Grácil:
+Solicitar por DM)       Escalar a Humano)           Usar caché local)</div>
+
+  <ul>
+    <li><strong>Caso 1 (Sin ID de Pedido):</strong> Se saltea el nodo logístico y el redactor emite un tweet solicitando el ID por DM.</li>
+    <li><strong>Caso 2 (Crisis de Marca / Legal):</strong> <code>urgency_score = 1.0</code> activa bypass agéntico inmediato escalando a soporte humano prioritario.</li>
+    <li><strong>Caso 3 (Timeout API Courier):</strong> Aplica degradación grácil recuperando la última fecha en caché de la DB interna.</li>
+    <li><strong>Caso 4 (Pedido Inexistente):</strong> Emite respuesta amable informando que el código no coincide y ofrece canal de asistencia.</li>
+  </ul>
+
+  <h2>6. Observabilidad y Guardrails Operativos</h2>
+  <ul>
+    <li><strong>Anti-Loop:</strong> Tope estricto de <code>recursion_limit = 4</code>. Si se supera, escala automáticamente a operador humano.</li>
+    <li><strong>Mitigación de Cuello de Botella:</strong> Prompt Caching en Supervisor, salidas estructuradas y llamadas asíncronas.</li>
+    <li><strong>Observabilidad (LangSmith):</strong> <code>Trace (Tweet ID) &rarr; Span (Supervisor) &rarr; Span (Worker) &rarr; Span (Tool Call)</code>.</li>
+    <li><strong>SLOs:</strong> TTFR &le; 45s, Aprobación de Quality Gate &ge; 90%, Costo &le; $0.003 USD por interacción.</li>
+  </ul>
+
+  <h2>7. Conclusión</h2>
+  <p>La <strong>Topología Jerárquica con Patrón Supervisor</strong> es la solución de ingeniería óptima para automatización en redes públicas, uniendo especialización técnica con riguroso control de calidad y mitigación de riesgos de marca.</p>
+
+</body>
+</html>

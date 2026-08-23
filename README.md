@@ -52,7 +52,8 @@ ai-engineering-coderhouse/
 │   │   └── pre_entrega_05/
 │   ├── 06-multi-agent/
 │   │   ├── 01_topologias_multiagente/
-│   │   └── 02_patron_supervisor/
+│   │   ├── 02_patron_supervisor/
+│   │   └── 03_estado_compartido_asincrono/
 │   └── 07-production/
 └── capstone/
 ```
@@ -64,7 +65,7 @@ ai-engineering-coderhouse/
 - [x] **Módulo 3 — Persistencia de datos y bases de datos vectoriales** (Práctica Embeddings + Pre-entrega 3)
 - [x] **Módulo 4 — Escalabilidad documental: RAG avanzado y Pinecone** (Sistema RAG Escalable en Pinecone + Pre-entrega 4)
 - [x] **Módulo 5 — Razonamiento autónomo: agentes con LangGraph** (Agente ReAct con Persistencia SQLite + Pre-entrega 5)
-- [ ] **Módulo 6 — Sistemas multiagente: colaboración y especialización** (Unidades 1 y 2 completadas)
+- [ ] **Módulo 6 — Sistemas multiagente: colaboración y especialización** (Unidades 1, 2 y 3 completadas)
 - [ ] **Módulo 7 — Producción y robustez: observabilidad, costos y despliegue**
 - [ ] **Capstone — Entrega final**
 

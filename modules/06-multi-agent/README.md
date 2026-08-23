@@ -19,6 +19,12 @@ Diseño de sistemas en los que múltiples agentes especializados colaboran, dele
   * [Código del Ejercicio (`patron_supervisor.py`)](./02_patron_supervisor/patron_supervisor.py)
   * [Documentación y Topología (`README.md`)](./02_patron_supervisor/README.md)
 
+### Unidad 3 — Estado Compartido y Comunicación Asíncrona
+* **Ejercicio:** Manejo de estado inmutable, contratos tipados con Pydantic V2 y optimización con concurrencia real (`asyncio.gather`).
+* **Ubicación:** [`03_estado_compartido_asincrono/`](./03_estado_compartido_asincrono/)
+  * [Código del Ejercicio (`estado_compartido_asincrono.py`)](./03_estado_compartido_asincrono/estado_compartido_asincrono.py)
+  * [Documentación y Concurrencia (`README.md`)](./03_estado_compartido_asincrono/README.md)
+
 ## Entregable
 
 *Pendiente.*

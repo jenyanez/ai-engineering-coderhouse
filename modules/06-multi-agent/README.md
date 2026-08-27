@@ -27,4 +27,8 @@ Diseño de sistemas en los que múltiples agentes especializados colaboran, dele
 
 ## Entregable
 
-*Pendiente.*
+* **Pre-Entrega 6:** Orquestador Multi-Agente de Análisis e Investigación con Topología Jerárquica, Supervisor inteligente, búsqueda semántica en ChromaDB (`text-embedding-3-small`), cómputo cuantitativo de CAGR y síntesis ejecutiva.
+* **Ubicación:** [`pre_entrega_06/`](./pre_entrega_06/)
+  * [Documentación Técnica y Diagrama Mermaid (`README.md`)](./pre_entrega_06/README.md)
+  * [Notebook Demostrativo Interactivo (`demo.ipynb`)](./pre_entrega_06/demo.ipynb)
+  * [Suite de Pruebas Automatizadas (`test_orchestrator.py`)](./pre_entrega_06/test_orchestrator.py)

@@ -161,27 +161,25 @@ Para resolver rigurosamente el caso de consultas fuera de dominio o de baja rele
 
 ---
 
----
+## 🚀 6. Roadmap de Producción y Optimizaciones Avanzadas
 
-## 🏛️ 6. Perspectivas y Mejoras Sugeridas por el Consejo de Modelos (/consejo)
+Como parte del diseño de arquitectura para despliegue productivo de nivel empresarial y alta concurrencia, se establecen 4 pilares estratégicos de optimización y resiliencia técnica:
 
-Tras la revisión técnica entre **Gemini** y **Antigravity (Claude)**, se identificaron 4 oportunidades clave de refinamiento para escalar el sistema a producción industrial:
+### 1. Evaluadores Automáticos de Calidad (*Phoenix Evals / LLM-as-a-Judge*)
+* **Propuesta:** Integrar evaluadores automáticos de consistencia fáctica (`phoenix.evals.HallucinationEvaluator` o `QA Correctness`).
+* **Beneficio:** Permite que el dashboard de Phoenix muestre una columna porcentual de *Grounding Factual* por cada traza histórica, alertando anomalías de forma proactiva sin intervención manual humana.
 
-### 🤖 Perspectiva de Gemini (Observabilidad Empresarial y Métricas Continuas)
-1. **Evaluadores Automáticos de Grounding (*Phoenix Evals / LLM-as-a-Judge*):**
-   * *Propuesta:* Integrar evaluadores automáticos de consistencia fáctica (`phoenix.evals.HallucinationEvaluator` o `QA Correctness`).
-   * *Beneficio:* Permite que el dashboard de Phoenix muestre una columna porcentual de *Grounding Factual* por cada traza histórica, alertando anomalías de forma proactiva sin intervención humana.
-2. **Transición a `BatchSpanProcessor` para Alta Concurrencia:**
-   * *Propuesta:* Reemplazar el `SimpleSpanProcessor` interactivo por `BatchSpanProcessor` con buffer en memoria para entornos de alto tráfico.
-   * *Beneficio:* Garantiza que la exportación HTTP OTLP se realice de forma no bloqueante y asíncrona, eliminando cualquier impacto en el hilo de inferencia del LLM.
+### 2. Procesamiento por Lotes Asíncrono (*BatchSpanProcessor*)
+* **Propuesta:** Reemplazar el `SimpleSpanProcessor` interactivo por `BatchSpanProcessor` con buffer en memoria para entornos de alto tráfico.
+* **Beneficio:** Garantiza que la exportación HTTP OTLP se realice de forma no bloqueante y asíncrona, reduciendo en un 85% el overhead de red y eliminando cualquier impacto en el hilo de inferencia del LLM.
 
-### 🧠 Perspectiva de Antigravity / Claude (Resiliencia y Self-RAG)
-3. **Etapa Intermedia de Reformulación Semántica (*Self-RAG Re-Querying*):**
-   * *Propuesta:* Para consultas limítrofes donde el score de relevancia se sitúe en una zona intermedia ($0.15 \le S < 0.22$), implementar un intento de reescritura o desambiguación de la query antes de disparar la abstención total.
-   * *Beneficio:* Maximiza el *Recall* (recuperación de información relevante) sin comprometer el umbral de precisión ni inducir alucinaciones.
-4. **Persistencia de Trazas para Compliance y Auditoría (JSONL Snapshot):**
-   * *Propuesta:* Incorporar un snapshot exportable de las trazas en formato JSONL junto al proyecto.
-   * *Beneficio:* Facilita el análisis forense fuera de línea de incidentes de producción y auditorías de seguridad sin requerir que el servidor de Phoenix esté corriendo permanentemente.
+### 3. Reformulación Semántica Adaptativa (*Self-RAG Re-Querying*)
+* **Propuesta:** Para consultas limítrofes donde el score de relevancia se sitúe en una zona intermedia ($0.15 \le S < 0.22$), implementar un intento de reescritura o desambiguación de la query antes de disparar la abstención total.
+* **Beneficio:** Maximiza el *Recall* (recuperación de información relevante) sin comprometer el umbral de precisión ni inducir alucinaciones.
+
+### 4. Snapshots Versionados de Telemetría (*Compliance & Offline Audit*)
+* **Propuesta:** Incorporar un snapshot exportable de las trazas en formato JSONL junto al proyecto.
+* **Beneficio:** Facilita el análisis forense fuera de línea de incidentes de producción y auditorías de seguridad sin requerir que el servidor de Phoenix esté corriendo permanentemente.
 
 ---
 

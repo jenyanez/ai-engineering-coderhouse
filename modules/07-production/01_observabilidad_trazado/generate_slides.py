@@ -346,27 +346,27 @@ def create_presentation():
              ], border_color=C_PRIMARY)
 
     # ----------------------------------------------------
-    # SLIDE 8: Perspectivas del Consejo (/consejo)
+    # SLIDE 8: Roadmap de Producción y Optimizaciones Avanzadas
     # ----------------------------------------------------
     s8 = prs.slides.add_slide(blank_layout)
-    add_header(s8, "7. Perspectivas y Mejoras del Consejo de Modelos (/consejo)")
+    add_header(s8, "7. Roadmap de Producción y Optimizaciones Avanzadas")
 
     add_card(s8, Inches(0.8), Inches(1.8), Inches(5.6), Inches(5.0),
-             "🤖 Perspectiva Gemini (Métricas Continuas)", [
-                 "1. Evaluadores Automáticos de Grounding:",
-                 "   Integrar `phoenix.evals.HallucinationEvaluator` para auditar la consistencia fáctica de cada traza en vivo con LLM-as-a-Judge.",
+             "🚀 Observabilidad y Alta Escala", [
+                 "1. Evaluadores Automáticos de Calidad:",
+                 "   Integrar `phoenix.evals.HallucinationEvaluator` para auditar la consistencia fáctica de cada traza en vivo con LLM-as-a-Judge sin intervención manual.",
                  "",
                  "2. BatchSpanProcessor para Producción:",
                  "   Reemplazar SimpleSpanProcessor por procesamiento por lotes asíncrono, asegurando cero overhead en los hilos del LLM."
              ], border_color=C_PRIMARY)
 
     add_card(s8, Inches(6.8), Inches(1.8), Inches(5.7), Inches(5.0),
-             "🧠 Perspectiva Antigravity (Resiliencia & Self-RAG)", [
-                 "3. Reformulación Semántica (Self-RAG):",
+             "🛡️ Resiliencia, Self-RAG y Compliance", [
+                 "3. Reformulación Semántica Adaptativa (Self-RAG):",
                  "   En zonas limítrofes (0.15 <= S < 0.22), reescribir la query antes de abstenerse, maximizando el Recall sin perder precisión.",
                  "",
-                 "4. Snapshots JSONL para Compliance:",
-                 "   Persistir snapshots estructurados para auditorías forenses fuera de línea sin depender del runtime de Phoenix."
+                 "4. Snapshots Versionados para Compliance:",
+                 "   Persistir snapshots estructurados en JSONL para auditorías forenses fuera de línea sin depender del runtime de Phoenix."
              ], border_color=C_SECONDARY)
 
     # ----------------------------------------------------

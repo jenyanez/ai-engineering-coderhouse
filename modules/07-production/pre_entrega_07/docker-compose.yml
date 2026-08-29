@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: multiagent_api
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - REDIS_URL=redis://redis:6379/0
+      - PHOENIX_COLLECTOR_ENDPOINT=http://phoenix:6006/v1/traces
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      redis:
+        condition: service_healthy
+      phoenix:
+        condition: service_healthy
+    networks:
+      - ai_production_net
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: multiagent_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - ai_production_net
+    restart: unless-stopped
+
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    container_name: multiagent_phoenix
+    ports:
+      - "6006:6006"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:6006/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ai_production_net
+    restart: unless-stopped
+
+networks:
+  ai_production_net:
+    driver: bridge
+
+volumes:
+  redis_data:

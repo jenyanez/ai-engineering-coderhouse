@@ -1,6 +1,6 @@
 # Módulo 7 — Producción y robustez: observabilidad, costos y despliegue
 
-**5 unidades** | Estado: 🔄 En progreso
+**5 unidades** | Estado: ✅ Completado
 
 ## Descripción
 
@@ -25,6 +25,17 @@ Preparación del sistema para producción mediante trazabilidad, observabilidad,
   * [Script de Simulación de Polling (`test_client.py`)](./02_escalabilidad_asincrona/test_client.py)
   * [Suite de Pruebas Unitarias de Evaluación (`test_evaluation.py`)](./02_escalabilidad_asincrona/test_evaluation.py)
 
-## Entregable
+## Entregable Principal
 
-*Pendiente.*
+### 🚀 Pre-Entrega 07 — API de Producción y Monitoreo Activo
+* **Ubicación:** [`pre_entrega_07/`](./pre_entrega_07/)
+  * [Documentación Técnica y Arquitectura Macro-a-Micro (`README.md`)](./pre_entrega_07/README.md)
+  * [API Asíncrona FastAPI (`app/main.py`)](./pre_entrega_07/app/main.py)
+  * [Worker con Persistencia Redis (`app/worker.py`)](./pre_entrega_07/app/worker.py)
+  * [Orquestador LangGraph con Checkpointer (`app/graph.py`)](./pre_entrega_07/app/graph.py)
+  * [Controlador Human-in-the-Loop (`app/hitl.py`)](./pre_entrega_07/app/hitl.py)
+  * [Observabilidad con Arize Phoenix (`app/observability.py`)](./pre_entrega_07/app/observability.py)
+  * [Suite de Pruebas Automatizadas (`tests/test_api.py`)](./pre_entrega_07/tests/test_api.py)
+  * [Benchmark de 5 Peticiones Concurrentes (`tests/benchmark_concurrent.py`)](./pre_entrega_07/tests/benchmark_concurrent.py)
+  * [Evidencia de Observabilidad (`screenshots/`)](./pre_entrega_07/screenshots/)
+  * [Contenerización con Docker Compose (`docker-compose.yml`)](./pre_entrega_07/docker-compose.yml)

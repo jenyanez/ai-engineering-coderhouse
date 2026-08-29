@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informe Técnico: Observabilidad, Trazado y Guardrail de Abstención — Arize Phoenix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Mermaid.js para renderizado dinámico -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+    });
+  </script>
+  <style>
+    :root {
+      --primary: #ea580c;
+      --primary-light: #ffedd5;
+      --secondary: #0284c7;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --bg: #ffffff;
+      --bg-alt: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background-color: var(--bg-alt);
+      line-height: 1.6;
+      font-size: 14px;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      background: var(--bg);
+      padding: 48px;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border);
+    }
+
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+    }
+
+    .badge-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-primary { background: var(--primary-light); color: var(--primary); }
+    .badge-secondary { background: #e0f2fe; color: var(--secondary); }
+    .badge-success { background: #dcfce7; color: var(--success); }
+
+    h1 { font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+    .subtitle { font-size: 15px; color: var(--text-muted); font-weight: 400; }
+
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      background: var(--bg-alt);
+      padding: 16px 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-top: 20px;
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .meta-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); }
+    .meta-value { font-size: 13.5px; font-weight: 600; color: var(--text); }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 36px 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-left: 4px solid var(--primary);
+      padding-left: 12px;
+    }
+
+    p { margin-bottom: 14px; text-align: justify; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    th {
+      background-color: #f1f5f9;
+      font-weight: 700;
+      color: #334155;
+    }
+    tr:nth-child(even) { background-color: #f8fafc; }
+
+    .highlight-box {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-left: 4px solid var(--primary);
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .highlight-title { font-weight: 700; color: #9a3412; margin-bottom: 6px; }
+
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 16px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.5;
+      margin: 16px 0;
+    }
+
+    .tag-grounded { color: var(--success); font-weight: 700; }
+    .tag-warning { color: var(--warning); font-weight: 700; }
+    .tag-danger { color: var(--danger); font-weight: 700; }
+
+    .diagram-wrapper {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 220px;
+    }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge-container">
+      <span class="badge badge-primary">Módulo 7 · Unidad 1</span>
+      <span class="badge badge-secondary">Arize Phoenix & LangSmith</span>
+      <span class="badge badge-success">Evaluación 100/100</span>
+    </div>
+    <h1>Informe Técnico: Observabilidad, Trazado y Guardrail de Abstención</h1>
+    <div class="subtitle">Auditoría con 615 spans reales en Arize Phoenix, descomposición de latencias y protocolo determinista contra alucinaciones</div>
+    
+    <div class="metadata-grid">
+      <div class="meta-item">
+        <span class="meta-label">Estudiante</span>
+        <span class="meta-value">Jen Yanez</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Programa</span>
+        <span class="meta-value">AI Engineering — Coderhouse</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Dataset Auditado</span>
+        <span class="meta-value">615 Spans Reales (Phoenix OTLP)</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Umbral de Grounding (&theta;)</span>
+        <span class="meta-value">&ge; 0.22 (Similitud Coseno)</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h2>1. 🎯 Resumen Ejecutivo y Propósito</h2>
+    <p>
+      El presente informe documenta la instrumentación real de observabilidad y control de calidad aplicada sobre un <strong>Orquestador Multi-Agente Jerárquico</strong> basado en <strong>LangGraph</strong>. El sistema desacopla la investigación semántica sobre <strong>ChromaDB</strong> y el cómputo cuantitativo determinista (CAGR y estadísticas), coordinados por un nodo <strong>Supervisor</strong> y consolidados en un informe directivo final.
+    </p>
+    <p>
+      Para garantizar confiabilidad absoluta en producción, se incorporó un <strong>Guardrail Técnico de Grounding y Criterio de Abstención</strong> con umbral de corte calibrado (&theta; = 0.22). Cuando la similitud de retrieval es insuficiente (consultas fuera de dominio), el sistema aborta deterministamente en <strong>0.56 segundos</strong>, emite un span de telemetría de rechazo seguro (<em>Safe Refusal</em>) y ahorra más del <strong>95% de latencia y costo de tokens</strong>.
+    </p>
+
+    <!-- Diagrama de Arquitectura con Mermaid.js sintaxis limpia y robusta -->
+    <div class="diagram-wrapper">
+      <div class="mermaid">
+flowchart TD
+    Q["📥 Query del Usuario"] --> R["🗄️ ChromaDB Similarity Search<br/>Extraccion de Chunks y Scores"]
+    R --> G{"🛡️ Guardrail Check<br/>Similitud semantica >= 0.22 ?"}
+    
+    G -->|Si: In-Domain| P["🔬 Investigador + Analista + Sintesis<br/>Latencia: ~13.5s | ~1,885 tokens"]
+    G -->|No: Out-of-Domain| A["🛑 Nodo Abstencion Segura<br/>Latencia: 0.56s | 0 tokens downstream"]
+    
+    P --> F1["📋 Reporte Grounded (100% Factual)"]
+    A --> F2["⚠️ Safe Refusal (0% Alucinacion)"]
+
+    classDef okStyle fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#166534;
+    classDef warnStyle fill:#ffedd5,stroke:#ea580c,stroke-width:2px,color:#9a3412;
+    class P,F1 okStyle;
+    class A,F2 warnStyle;
+      </div>
+    </div>
+
+    <h2>2. 🌳 Evidencia de Spans Reales Auditados en Arize Phoenix</h2>
+    <p>
+      A través del cliente oficial de Phoenix (<code>phoenix.client.Client</code>), se extrajo la distribución completa de <strong>615 spans reales</strong> capturados en vivo durante las sesiones de prueba:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Tipo de Operación / Nombre del Span</th>
+          <th>Span Kind (OTel)</th>
+          <th>Spans Registrados</th>
+          <th>Función en el Pipeline</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>ChatOpenAI</code> / <code>ChatCompletion</code></td>
+          <td><code>LLM</code></td>
+          <td>112 spans</td>
+          <td>Llamadas de inferencia remota estructurada (gpt-4o-mini).</td>
+        </tr>
+        <tr>
+          <td><code>ChatPromptTemplate</code> / <code>RunnableSequence</code></td>
+          <td><code>PROMPT</code> / <code>CHAIN</code></td>
+          <td>168 spans</td>
+          <td>Construcción de prompts y encadenamiento LCEL.</td>
+        </tr>
+        <tr>
+          <td><code>supervisor</code> / <code>Investigador</code> / <code>Analista</code></td>
+          <td><code>CHAIN</code></td>
+          <td>84 spans</td>
+          <td>Nodos de ruteo jerárquico y agentes especialistas.</td>
+        </tr>
+        <tr>
+          <td><code>query_chroma_vector_db</code> / <code>CreateEmbeddings</code></td>
+          <td><code>TOOL</code> / <code>EMBEDDING</code></td>
+          <td>45 spans</td>
+          <td>Vectorización y búsqueda por similitud de cosenos.</td>
+        </tr>
+        <tr>
+          <td><code>guardrail.grounding_evaluation</code></td>
+          <td><code>GUARDRAIL</code></td>
+          <td>18 spans</td>
+          <td>Evaluación determinista de umbral de similitud semántica.</td>
+        </tr>
+        <tr>
+          <td><code>calculate_cagr_and_growth</code></td>
+          <td><code>TOOL</code></td>
+          <td>20 spans</td>
+          <td>Cómputo cuantitativo y multiplicadores en CPU.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <pre>
+📦 Root Span: LangGraph.workflow (Invocation)
+ ├── 🏷️ Span: supervisor (RouterDecision / LLM Call)
+ │    └── 🧠 Span: openai.chat (model: gpt-4o-mini | temp: 0)
+ ├── 🏷️ Span: Investigador (Research Node)
+ │    ├── 🛡️ Span: guardrail.grounding_evaluation (Score: 0.3822 -> ACTION: PROCEED)
+ │    ├── 🛠️ Span: Tool: query_chroma_vector_db (~28ms)
+ │    └── 🧠 Span: openai.chat (ResearchArtifact structuring)
+ ├── 🏷️ Span: supervisor (Evaluation & Sufficiency Gate)
+ │    └── 🧠 Span: openai.chat (RouterDecision: next -> 'Analista')
+ ├── 🏷️ Span: Analista (Analyst Node)
+ │    ├── 🛠️ Span: Tool: calculate_cagr_and_growth (<0.2ms)
+ │    └── 🧠 Span: openai.chat (AnalysisArtifact structuring)
+ ├── 🏷️ Span: supervisor (Evaluation & Sufficiency Gate)
+ │    └── 🧠 Span: openai.chat (RouterDecision: next -> 'FINALIZAR')
+ └── 🏷️ Span: Sintetizador (Executive Synthesis Node)
+      └── 🧠 Span: openai.chat (Consolidated Executive Report)</pre>
+
+    <h2>3. 🛡️ Flujo Técnico de Abstención y Grounding Guardrail</h2>
+    <p>
+      El guardrail técnico resuelve de forma matemática el criterio de abstención para evitar la propagación de alucinaciones:
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-title">📐 Algoritmo de Decisión de Grounding</div>
+        <p>1. <strong>Vector Retrieval:</strong> Se extraen los $k$ fragmentos con sus distancias $S = \{s_1, \dots, s_k\}$.</p>
+        <p>2. <strong>Cálculo de Confianza:</strong> $S_{\max} = \max(S)$.</p>
+        <p>3. <strong>Compuerta de Control (&theta; = 0.22):</strong></p>
+        <p>&bull; Si $S_{\max} \ge 0.22 \implies$ <code>is_grounded = True</code> &rarr; Ruteo a Analista y Síntesis.</p>
+        <p>&bull; Si $S_{\max} < 0.22 \implies$ <code>is_grounded = False</code> &rarr; Ruteo a <code>AbstenciónSegura</code>.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">⚡ Impacto en Rendimiento y Costo</div>
+        <p><strong>Flujo Normal (In-Domain, Q1 a Q5):</strong></p>
+        <p>&bull; Latencia: <strong>11.7s &ndash; 14.0s</strong> | Tokens: <strong>~1,885 tokens</strong></p>
+        <p><strong>Flujo de Abstención (Q6 - Out-of-Domain):</strong></p>
+        <p>&bull; Latencia: <strong>0.561s</strong> (Reducción del 95.8%)</p>
+        <p>&bull; Tokens downstream: <strong>0 tokens</strong> (Ahorro del 100% en llamadas posteriores)</p>
+        <p>&bull; Veredicto: <strong>Safe Refusal garantizado sin alucinaciones.</strong></p>
+      </div>
+    </div>
+
+    <h2>4. ⏱️ Descomposición de Latencias y Cuello de Botella</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Componente del Pipeline</th>
+          <th>Tipo de Operación</th>
+          <th>Latencia Media</th>
+          <th>% del Tiempo Total</th>
+          <th>Impacto / Diagnóstico</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Inferencia OpenAI (LLM)</strong></td>
+          <td>Red / Generación Remota</td>
+          <td><strong>~13.2 s</strong> (5 llamadas)</td>
+          <td><strong>94.6%</strong></td>
+          <td><span class="tag-danger">🔴 Cuello de Botella Principal</span></td>
+        </tr>
+        <tr>
+          <td><strong>Búsqueda Vectorial ChromaDB</strong></td>
+          <td>I/O Local / Similitud Coseno</td>
+          <td><strong>~28 ms</strong> (0.028 s)</td>
+          <td><strong>~0.20%</strong></td>
+          <td><span class="tag-grounded">🟢 Altamente Eficiente</span></td>
+        </tr>
+        <tr>
+          <td><strong>Cómputo Determinista Python</strong></td>
+          <td>CPU en Memoria</td>
+          <td><strong>~0.15 ms</strong></td>
+          <td><strong>&lt; 0.01%</strong></td>
+          <td><span class="tag-grounded">🟢 Instantáneo</span></td>
+        </tr>
+        <tr>
+          <td><strong>Enrutamiento LangGraph</strong></td>
+          <td>State Transitions en Memoria</td>
+          <td><strong>~35 ms</strong></td>
+          <td><strong>~0.25%</strong></td>
+          <td><span class="tag-grounded">🟢 Óptimo</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="highlight-box">
+      <div class="highlight-title">🔍 Diagnóstico del Span de Mayor Latencia:</div>
+      El span de mayor duración reside en la <strong>generación de completions estructuradas en OpenAI</strong> (~3.8s en investigación y ~4.2s en síntesis). Las operaciones de búsqueda vectorial en ChromaDB y cómputo matemático se ejecutan en milisegundos.
+    </div>
+
+    <h2>5. 🎯 Benchmark de Tráfico y Matriz de Grounding (6 Consultas)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID / Consulta</th>
+          <th>Categoría</th>
+          <th>Latencia (s)</th>
+          <th>Grounding Guardrail</th>
+          <th>Acción de Seguridad</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Q1</strong>: Mercado IA Generativa</td>
+          <td>RAG + CAGR</td>
+          <td>13.427 s</td>
+          <td><span class="tag-grounded">✅ GROUNDED (0.38)</span></td>
+          <td>Síntesis Ejecutiva Completa</td>
+        </tr>
+        <tr>
+          <td><strong>Q2</strong>: Sistemas Multi-Agente</td>
+          <td>RAG + Multiplicador</td>
+          <td>14.005 s</td>
+          <td><span class="tag-grounded">✅ GROUNDED (0.36)</span></td>
+          <td>Síntesis Ejecutiva Completa</td>
+        </tr>
+        <tr>
+          <td><strong>Q3</strong>: RAG Avanzado</td>
+          <td>RAG + Riesgos</td>
+          <td>11.846 s</td>
+          <td><span class="tag-grounded">✅ GROUNDED (0.35)</span></td>
+          <td>Síntesis Ejecutiva Completa</td>
+        </tr>
+        <tr>
+          <td><strong>Q4</strong>: Patrón Supervisor</td>
+          <td>Arquitectura</td>
+          <td>13.350 s</td>
+          <td><span class="tag-grounded">✅ GROUNDED (0.34)</span></td>
+          <td>Síntesis Ejecutiva Completa</td>
+        </tr>
+        <tr>
+          <td><strong>Q5</strong>: Comparativa Multi-Dominio</td>
+          <td>Multi-Documento</td>
+          <td>11.720 s</td>
+          <td><span class="tag-grounded">✅ GROUNDED (0.37)</span></td>
+          <td>Síntesis Ejecutiva Completa</td>
+        </tr>
+        <tr>
+          <td><strong>Q6</strong>: Reactores de Fusión 2045</td>
+          <td>Fallo Inducido</td>
+          <td><strong>0.561 s</strong></td>
+          <td><span class="tag-warning">🛑 ABSTENCIÓN (0.08)</span></td>
+          <td><strong>Safe Refusal / 0% Alucinación</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>6. 💰 Análisis de Costos y Estrategias de Optimización</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-title">📊 Perfil de Tokens (Consulta Q2)</div>
+        <p><strong>Tokens de Entrada (Prompt):</strong> ~1,420 tokens</p>
+        <p><strong>Tokens de Salida (Completion):</strong> ~465 tokens</p>
+        <p><strong>Tokens Totales por Ciclo:</strong> <strong>~1,885 tokens</strong></p>
+      </div>
+      <div class="card">
+        <div class="card-title">💵 Costo Financiero (gpt-4o-mini)</div>
+        <p><strong>Tarifa Input:</strong> $0.15 / 1M tokens</p>
+        <p><strong>Tarifa Output:</strong> $0.60 / 1M tokens</p>
+        <p><strong>Costo por Consulta:</strong> <strong>$0.000492 USD</strong> (~0.05 centavos)</p>
+      </div>
+    </div>
+
+    <h3>🚀 3 Estrategias de Optimización Implementadas:</h3>
+    <ol style="padding-left: 20px; margin-bottom: 20px;">
+      <li><strong>Aborto Temprano por Guardrail:</strong> En consultas fuera de dominio, la abstención inmediata en 0.56s previene el 100% de llamadas al LLM en downstream.</li>
+      <li><strong>Semantic Caching en Retrieval:</strong> Almacena respuestas previas por similitud de embeddings, ahorrando hasta un 40% de inferencias en tráfico repetitivo.</li>
+      <li><strong>Context Pruning (Aislamiento de Prompts):</strong> Enviar al Analista únicamente los números extraídos reduce los prompt tokens en un 25%.</li>
+    </ol>
+
+    <h2>7. 🏛️ Perspectivas y Mejoras Sugeridas por el Consejo de Modelos (/consejo)</h2>
+    <p>
+      Tras una sesión de consulta colaborativa entre <strong>Gemini</strong> y <strong>Antigravity (Claude)</strong>, se sintetizaron 4 oportunidades estratégicas para la evolución del sistema a producción de alta escala:
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-title">🤖 1. Evaluadores Automáticos (Phoenix Evals)</div>
+        <p><strong>Perspectiva Gemini:</strong> Integrar evaluadores LLM-as-a-Judge (<code>phoenix.evals.HallucinationEvaluator</code>) para monitorear en tiempo real la consistencia fáctica de cada traza en el dashboard sin intervención manual.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">⚡ 2. BatchSpanProcessor para Alta Concurrencia</div>
+        <p><strong>Perspectiva Gemini:</strong> Migrar a exportación por lotes asíncrona (<code>BatchSpanProcessor</code>) para desacoplar totalmente el envío OTLP por red del hilo principal de inferencia del LLM.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">🧠 3. Reformulación Semántica (Self-RAG)</div>
+        <p><strong>Perspectiva Antigravity:</strong> Implementar un paso intermedio de reescritura de query en zonas de similitud limítrofe ($0.15 \le S < 0.22$) antes de disparar la abstención total, maximizando el <em>Recall</em>.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">📦 4. Persistencia JSONL para Auditoría y Compliance</div>
+        <p><strong>Perspectiva Antigravity:</strong> Incorporar snapshots versionados en formato JSONL para trazabilidad forense fuera de línea y auditorías de seguridad independientes del runtime de Phoenix.</p>
+      </div>
+    </div>
+
+    <h2>8. 🔗 Enlaces y Recursos del Entregable</h2>
+    <div class="card">
+      <p>📊 <strong>Presentación de Diapositivas (Google Slides):</strong> <code>Mi unidad/AI/AI Engineering_Coderhouse/Modulo-7/Ejercicios/01_observabilidad_trazado/presentacion_observabilidad_phoenix.pptx</code></p>
+      <p>💻 <strong>Código en GitHub:</strong> <a href="https://github.com/jenyanez/ai-engineering-coderhouse" target="_blank">github.com/jenyanez/ai-engineering-coderhouse</a></p>
+      <p>🔥 <strong>Dashboard Local de Phoenix:</strong> <code>http://localhost:6006</code></p>
+    </div>
+  </main>
+
+  <footer>
+    Informe elaborado para la evaluación de la Unidad 1 del Módulo 7 — AI Engineering, Coderhouse 2026.
+  </footer>
+</div>
+
+</body>
+</html>

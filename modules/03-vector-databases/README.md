@@ -18,6 +18,12 @@ Implementación de memoria de largo plazo utilizando embeddings, recuperación s
   * [Procesador de Documentos por Tokens (`document_processor.py`)](./02_estrategias_chunking/document_processor.py)
   * [Suite de Pruebas Automatizadas (`test_chunking.py`)](./02_estrategias_chunking/test_chunking.py)
 
+### Unidad 3 — Persistencia Local con ChromaDB: Operaciones CRUD
+* **Ubicación:** [`03_persistencia_chromadb/`](./03_persistencia_chromadb/)
+  * [Documentación Técnica (`README.md`)](./03_persistencia_chromadb/README.md)
+  * [Gestor de Memoria Vectorial CRUD (`vector_memory_manager.py`)](./03_persistencia_chromadb/vector_memory_manager.py)
+  * [Suite de Pruebas Automatizadas (`test_vector_memory.py`)](./03_persistencia_chromadb/test_vector_memory.py)
+
 ### Pre-Entrega 03 — Sistema de Ingesta y Búsqueda Vectorial
 * **Ubicación:** [`pre_entrega_03/`](./pre_entrega_03/)
 

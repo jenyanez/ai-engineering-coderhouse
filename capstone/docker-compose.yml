@@ -48,7 +48,7 @@ services:
     ports:
       - "6006:6006"
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:6006/ || exit 1"]
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:6006/')\" 2>/dev/null || curl -f http://localhost:6006/ || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5

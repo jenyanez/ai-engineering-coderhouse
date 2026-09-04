@@ -29,8 +29,12 @@ def supervisor_node(state: IntelligenceState) -> Dict[str, Any]:
             "messages": [AIMessage(content="[Supervisor] Consulta fuera de dominio. Derivando a Revisor.")],
         }
 
-    # Paso 3: Si hay datos de investigación pero no cuantitativos, delegar al Analista
-    if not state.get("analysis_data"):
+    # Paso 3: Evaluar si la consulta requiere análisis cuantitativo
+    query = state.get("query", "").lower()
+    needs_quant = bool(research.get("market_size_2024_usd_b")) or any(
+        w in query for w in ["cagr", "calcul", "crecimiento", "proyecc", "tasa", "mercado", "usd"]
+    )
+    if needs_quant and not state.get("analysis_data"):
         return {
             "next_agent": "Analista",
             "iteration_count": iteration,

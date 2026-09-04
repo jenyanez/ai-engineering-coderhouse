@@ -9,21 +9,22 @@ from app.tools.compute_tool import calculate_cagr
 
 @trace_agent_span("analista", span_kind="agent")
 def analyst_node(state: IntelligenceState) -> Dict[str, Any]:
-    """Procesa los datos cuantitativos y genera proyecciones matemáticas."""
+    """Procesa los datos cuantitativos y genera proyecciones matemáticas si aplica."""
     research = state.get("research_data", {})
+    val_start = research.get("market_size_2024_usd_b")
+    val_end = research.get("market_size_2030_usd_b")
 
-    if not research.get("found_in_kb", False):
+    # Si no hay datos numéricos en la investigación, no forzar cálculo financiero
+    if val_start is None or val_end is None:
         payload = AnalysisPayload(
             valid_analysis=False,
-            interpretation="No aplica análisis cuantitativo para consultas fuera de dominio.",
+            interpretation="Consulta conceptual/técnica: No requiere cálculo cuantitativo.",
         )
         return {
             "analysis_data": payload.model_dump(),
-            "messages": [AIMessage(content="[Analista] Omitiendo cómputo por falta de datos.")],
+            "messages": [AIMessage(content="[Analista] Consulta conceptual sin requerimiento numérico.")],
         }
 
-    val_start = research.get("market_size_2024_usd_b", 67.0) or 67.0
-    val_end = research.get("market_size_2030_usd_b", 1300.0) or 1300.0
     cagr_result = calculate_cagr.invoke({
         "val_start": float(val_start),
         "val_end": float(val_end),

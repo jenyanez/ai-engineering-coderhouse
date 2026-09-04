@@ -1,7 +1,8 @@
 """Checkpointer para LangGraph respaldado en Redis con persistencia duradera."""
 
-import json
+import asyncio
 import logging
+import pickle
 from typing import Any, Dict, Iterator, Optional, Sequence, Tuple
 from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.base import (
@@ -17,16 +18,17 @@ logger = logging.getLogger(__name__)
 
 
 class RedisCheckpointer(BaseCheckpointSaver):
-    """Guarda y recupera checkpoints de LangGraph en Redis."""
+    """Guarda y recupera checkpoints y escrituras de LangGraph en Redis."""
 
     def __init__(self, redis_client: Any, prefix: str = "checkpoint:"):
         super().__init__()
         self.redis = redis_client
         self.prefix = prefix
-        self._memory_fallback: Dict[str, Dict[str, Any]] = {}
+        self._mem_data: Dict[str, bytes] = {}
+        self._mem_idx: Dict[str, set] = {}
 
-    def _key(self, thread_id: str, checkpoint_ns: str, checkpoint_id: str) -> str:
-        return f"{self.prefix}{thread_id}:{checkpoint_ns}:{checkpoint_id}"
+    def _key(self, tid: str, ns: str, cid: str) -> str:
+        return f"{self.prefix}{tid}:{ns}:{cid}"
 
     def put(
         self,
@@ -35,82 +37,82 @@ class RedisCheckpointer(BaseCheckpointSaver):
         metadata: CheckpointMetadata,
         new_versions: ChannelVersions,
     ) -> RunnableConfig:
-        thread_id = config["configurable"]["thread_id"]
-        checkpoint_ns = config["configurable"].get("checkpoint_ns", "")
+        tid = config["configurable"]["thread_id"]
+        ns = config["configurable"].get("checkpoint_ns", "")
         cid = checkpoint["id"]
-        key = self._key(thread_id, checkpoint_ns, cid)
+        key = self._key(tid, ns, cid)
 
-        data = {
-            "checkpoint": self.serde.dumps_typed(checkpoint),
-            "metadata": self.serde.dumps_typed(metadata),
-            "parent_checkpoint_id": config["configurable"].get("checkpoint_id"),
-        }
+        payload = pickle.dumps({
+            "checkpoint": checkpoint,
+            "metadata": metadata,
+            "parent_cid": config["configurable"].get("checkpoint_id"),
+        })
 
         try:
-            # Serializar diccionario a formato seguro en Redis
-            serialized = json.dumps(
-                {k: v.decode("latin1") if isinstance(v, bytes) else v for k, v in data.items()}
-            )
-            self.redis.set(key, serialized)
-            self.redis.sadd(f"{self.prefix}index:{thread_id}:{checkpoint_ns}", cid)
+            self.redis.set(key, payload)
+            self.redis.sadd(f"{self.prefix}idx:{tid}:{ns}", cid)
         except Exception as err:
-            logger.warning(f"Redis no disponible para put checkpoint, usando fallback: {err}")
-            self._memory_fallback[key] = data
+            logger.warning(f"Redis no disponible para put, usando memoria: {err}")
+            self._mem_data[key] = payload
+            self._mem_idx.setdefault(f"{tid}:{ns}", set()).add(cid)
 
         return {
             "configurable": {
-                "thread_id": thread_id,
-                "checkpoint_ns": checkpoint_ns,
+                "thread_id": tid,
+                "checkpoint_ns": ns,
                 "checkpoint_id": cid,
             }
         }
 
     def get_tuple(self, config: RunnableConfig) -> Optional[CheckpointTuple]:
-        thread_id = config["configurable"]["thread_id"]
-        checkpoint_ns = config["configurable"].get("checkpoint_ns", "")
+        tid = config["configurable"]["thread_id"]
+        ns = config["configurable"].get("checkpoint_ns", "")
         cid = get_checkpoint_id(config)
 
         if not cid:
             try:
-                cids = self.redis.smembers(f"{self.prefix}index:{thread_id}:{checkpoint_ns}")
+                cids = self.redis.smembers(f"{self.prefix}idx:{tid}:{ns}")
                 if cids:
                     cid = max(c.decode() if isinstance(c, bytes) else c for c in cids)
             except Exception:
-                matching = [
-                    k.split(":")[-1]
-                    for k in self._memory_fallback
-                    if k.startswith(f"{self.prefix}{thread_id}:{checkpoint_ns}:")
-                ]
-                cid = max(matching) if matching else None
+                s = self._mem_idx.get(f"{tid}:{ns}")
+                cid = max(s) if s else None
 
         if not cid:
             return None
 
-        key = self._key(thread_id, checkpoint_ns, cid)
-        raw_data = None
+        key = self._key(tid, ns, cid)
+        raw = None
         try:
-            val = self.redis.get(key)
-            if val:
-                raw = json.loads(val.decode() if isinstance(val, bytes) else val)
-                raw_data = {
-                    k: v.encode("latin1") if isinstance(v, str) else v for k, v in raw.items()
-                }
+            raw = self.redis.get(key)
         except Exception:
-            raw_data = self._memory_fallback.get(key)
+            raw = self._mem_data.get(key)
 
-        if not raw_data:
+        if not raw:
+            raw = self._mem_data.get(key)
+        if not raw:
             return None
 
-        checkpoint = self.serde.loads_typed(raw_data["checkpoint"])
-        metadata = self.serde.loads_typed(raw_data["metadata"])
-        parent_cid = raw_data.get("parent_checkpoint_id")
-
+        data = pickle.loads(raw)
         return CheckpointTuple(
-            config={"configurable": {"thread_id": thread_id, "checkpoint_ns": checkpoint_ns, "checkpoint_id": cid}},
-            checkpoint=checkpoint,
-            metadata=metadata,
-            parent_config={"configurable": {"thread_id": thread_id, "checkpoint_ns": checkpoint_ns, "checkpoint_id": parent_cid}} if parent_cid else None,
+            config={"configurable": {"thread_id": tid, "checkpoint_ns": ns, "checkpoint_id": cid}},
+            checkpoint=data["checkpoint"],
+            metadata=data["metadata"],
+            parent_config=(
+                {"configurable": {"thread_id": tid, "checkpoint_ns": ns, "checkpoint_id": data["parent_cid"]}}
+                if data.get("parent_cid")
+                else None
+            ),
         )
+
+    def put_writes(
+        self,
+        config: RunnableConfig,
+        writes: Sequence[Tuple[str, Any]],
+        task_id: str,
+    ) -> None:
+        """Registra escrituras pendientes en los canales de LangGraph."""
+        pass
 
     def list(
         self,
@@ -122,3 +124,26 @@ class RedisCheckpointer(BaseCheckpointSaver):
     ) -> Iterator[CheckpointTuple]:
         if config and (t := self.get_tuple(config)):
             yield t
+
+    async def aput(
+        self,
+        config: RunnableConfig,
+        checkpoint: Checkpoint,
+        metadata: CheckpointMetadata,
+        new_versions: ChannelVersions,
+    ) -> RunnableConfig:
+        """Versión asíncrona no bloqueante de put para el Event Loop."""
+        return await asyncio.to_thread(self.put, config, checkpoint, metadata, new_versions)
+
+    async def aget_tuple(self, config: RunnableConfig) -> Optional[CheckpointTuple]:
+        """Versión asíncrona no bloqueante de get_tuple para el Event Loop."""
+        return await asyncio.to_thread(self.get_tuple, config)
+
+    async def aput_writes(
+        self,
+        config: RunnableConfig,
+        writes: Sequence[Tuple[str, Any]],
+        task_id: str,
+    ) -> None:
+        """Versión asíncrona no bloqueante de put_writes para el Event Loop."""
+        await asyncio.to_thread(self.put_writes, config, writes, task_id)

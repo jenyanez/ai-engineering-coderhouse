@@ -24,9 +24,9 @@ El curso propone un recorrido incremental: cada módulo incorpora una nueva capa
 | 3 | Persistencia de datos y bases de datos vectoriales | 6 | Embeddings, ChromaDB, RAG básico | ✅ Completado |
 | 4 | Escalabilidad documental: RAG avanzado y Pinecone | 6 | Pinecone, procesamiento documental | ✅ Completado |
 | 5 | Razonamiento autónomo: agentes con LangGraph | 6 | LangGraph, herramientas, estado | ✅ Completado |
-| 6 | Sistemas multiagente: colaboración y especialización | 7 | Supervisor, jerarquías, delegación | 🔄 En progreso |
-| 7 | Producción y robustez: observabilidad, costos y despliegue | 5 | Trazabilidad, APIs, deploy | ⏳ Pendiente |
-| 8 | Capstone: entrega final | 1 | Integración de todas las capas | ⏳ Pendiente |
+| 6 | Sistemas multiagente: colaboración y especialización | 7 | Supervisor, jerarquías, delegación | ✅ Completado |
+| 7 | Producción y robustez: observabilidad, costos y despliegue | 5 | Trazabilidad, APIs, deploy | ✅ Completado |
+| 8 | Capstone: entrega final | 1 | Integración de todas las capas | ✅ Completado |
 
 ## Estructura del repositorio
 
@@ -68,8 +68,8 @@ ai-engineering-coderhouse/
 - [x] **Módulo 4 — Escalabilidad documental: RAG avanzado y Pinecone** (Sistema RAG Escalable en Pinecone + Pre-entrega 4)
 - [x] **Módulo 5 — Razonamiento autónomo: agentes con LangGraph** (Agente ReAct con Persistencia SQLite + Pre-entrega 5)
 - [x] **Módulo 6 — Sistemas multiagente: colaboración y especialización** (Unidades 1, 2 y 3 + Pre-entrega 6)
-- [ ] **Módulo 7 — Producción y robustez: observabilidad, costos y despliegue** (Unidad 1 completada)
-- [ ] **Capstone — Entrega final**
+- [x] **Módulo 7 — Producción y robustez: observabilidad, costos y despliegue** (Unidades 1 y 2 + Pre-entrega 7)
+- [x] **Capstone — Entrega final** (Sistema Intelligence de grado de producción)
 
 ## Autor
 

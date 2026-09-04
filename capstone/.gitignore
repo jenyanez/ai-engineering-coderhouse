@@ -1,0 +1,32 @@
+# Entorno y variables de seguridad
+.env
+.env.local
+.env.production
+.env.development
+
+# Entornos virtuales
+.venv/
+venv/
+ENV/
+env/
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Base de datos vectorial y almacenamiento local
+chroma_db/
+data/chroma_db/
+redis_data/
+*.sqlite
+*.sqlite3
+
+# Logs y trazas locales
+*.log
+logs/
+
+# Sistema Operativo
+.DS_Store
+Thumbs.db

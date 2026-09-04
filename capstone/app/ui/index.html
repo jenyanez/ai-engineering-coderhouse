@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mission Control — Intelligence Production System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card: rgba(18, 26, 43, 0.85);
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.3);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at 50% 0%, #172554, var(--bg) 70%);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+    }
+    .brand h1 { font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+    .brand p { font-size: 0.9rem; color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+    .status-badges { display: flex; gap: 0.75rem; }
+    .badge {
+      padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;
+      text-decoration: none; border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .badge-live { background: rgba(16, 185, 129, 0.15); color: var(--success); border-color: rgba(16, 185, 129, 0.3); }
+    .badge-phoenix { background: rgba(56, 189, 248, 0.15); color: var(--accent); border-color: rgba(56, 189, 248, 0.3); }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 1rem;
+      padding: 1.5rem; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    textarea {
+      width: 100%; height: 100px; background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+      border-radius: 0.5rem; padding: 0.75rem; color: #fff; font-family: inherit; font-size: 0.95rem; resize: vertical; margin-bottom: 0.75rem;
+    }
+    textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+    .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .btn {
+      background: var(--accent); color: #090d16; border: none; padding: 0.6rem 1.2rem;
+      border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
+    }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-preset { background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid var(--border); font-size: 0.8rem; padding: 0.35rem 0.65rem; }
+    .btn-preset:hover { background: rgba(255,255,255,0.12); color: var(--accent); }
+    .progress-bar-container { background: rgba(0,0,0,0.4); border-radius: 9999px; height: 8px; overflow: hidden; margin-top: 1rem; }
+    .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--success)); transition: width 0.3s; }
+    .output-box {
+      background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 0.5rem;
+      padding: 1rem; min-height: 200px; max-height: 400px; overflow-y: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.5; color: #cbd5e1; white-space: pre-wrap;
+    }
+    .hitl-banner {
+      background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 0.75rem; padding: 1rem; margin-bottom: 1rem; display: none;
+    }
+    .hitl-banner h4 { color: var(--warning); font-size: 0.95rem; margin-bottom: 0.5rem; }
+    .btn-approve { background: var(--success); color: #fff; }
+    .btn-reject { background: var(--danger); color: #fff; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
+    th, td { padding: 0.6rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-weight: 500; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1>Intelligence System — Mission Control</h1>
+        <p>ARQUITECTURA MULTI-AGENTE ASÍNCRONA · PRODUCCIÓN 2026</p>
+      </div>
+      <div class="status-badges">
+        <a href="/docs" target="_blank" class="badge badge-live"><span class="badge-dot"></span>FastAPI Docs</a>
+        <a href="http://localhost:6006" target="_blank" class="badge badge-phoenix"><span class="badge-dot"></span>Arize Phoenix</a>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Columna 1: Consola de Peticiones -->
+      <div class="card">
+        <div class="card-title">
+          <span>⚡ Disparador de Tareas Complejas</span>
+        </div>
+        <textarea id="queryInput" placeholder="Escribe tu consulta analítica o de mercado..."></textarea>
+        <div class="btn-group">
+          <button class="btn btn-preset" onclick="setPreset(1)">📊 Mercado IA 2025</button>
+          <button class="btn btn-preset" onclick="setPreset(2)">📈 Proyección CAGR</button>
+          <button class="btn btn-preset" onclick="setPreset(3)">🛑 Caso HITL Crítico</button>
+          <button class="btn btn-preset" onclick="setPreset(4)">🚫 Fuera de Dominio</button>
+        </div>
+        <button class="btn" id="btnSubmit" onclick="submitTask()">Ejecutar Flujo Asíncrono</button>
+
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <p id="statusMsg" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Listo para despachar tareas.</p>
+
+        <!-- Banner Human-in-the-Loop -->
+        <div class="hitl-banner" id="hitlBanner">
+          <h4>🛑 INTERVENCIÓN HUMAN-IN-THE-LOOP REQUERIDA</h4>
+          <p id="hitlReason" style="font-size: 0.85rem; margin-bottom: 0.75rem;">La tarea implica una proyección o decisión crítica que requiere validación humana.</p>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-approve" onclick="resolveHITL(true)">Aprobar Tarea</button>
+            <button class="btn btn-reject" onclick="resolveHITL(false)">Rechazar Tarea</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna 2: Visor de Resultados -->
+      <div class="card">
+        <div class="card-title">
+          <span>📋 Resultado Consolidado & Trazas</span>
+          <span id="timingBadge" style="font-size: 0.8rem; color: var(--accent); font-family: 'JetBrains Mono';"></span>
+        </div>
+        <div class="output-box" id="outputBox">Esperando despacho de tareas...</div>
+      </div>
+    </div>
+
+    <!-- Sección de Tareas Recientes -->
+    <div class="card" style="margin-top: 1.5rem;">
+      <div class="card-title">
+        <span>🔄 Historial de Trabajos Persistidos (Redis)</span>
+        <button class="btn btn-preset" onclick="loadRecentTasks()">Refrescar</button>
+      </div>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Job ID</th><th>Consulta</th><th>Estado</th><th>Progreso</th><th>Tiempo</th><th>Creado</th>
+            </tr>
+          </thead>
+          <tbody id="tasksTableBody">
+            <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Sin tareas registradas aún.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let activeJobId = null;
+    let pollInterval = null;
+
+    const PRESETS = {
+      1: "¿Cuál es la proyección de mercado de IA Generativa y adopción Fortune 500 según el informe?",
+      2: "Calcula el CAGR compuesto de 2024 a 2030 del mercado de IA Generativa con factor de expansión.",
+      3: "Genera recomendación crítica de inversión institucional en IA generativa multi-agente para 2030.",
+      4: "¿Cuál es la receta de pasta al pesto tradicional italiana?"
+    };
+
+    function setPreset(id) {
+      document.getElementById('queryInput').value = PRESETS[id];
+    }
+
+    async function submitTask() {
+      const query = document.getElementById('queryInput').value.trim();
+      if (!query) return alert('Por favor ingresa una consulta');
+
+      document.getElementById('btnSubmit').disabled = true;
+      document.getElementById('outputBox').textContent = "Encolando tarea en Redis...";
+      document.getElementById('progressBar').style.width = "10%";
+      document.getElementById('statusMsg').textContent = "Despachando...";
+      document.getElementById('hitlBanner').style.display = "none";
+
+      try {
+        const res = await fetch('/api/v1/query', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: query })
+        });
+        const data = await res.json();
+        activeJobId = data.job_id;
+        document.getElementById('statusMsg').textContent = `Job ID: ${activeJobId} encolado. Sondeando estado...`;
+        startPolling(activeJobId);
+      } catch (err) {
+        document.getElementById('outputBox').textContent = "Error al despachar: " + err;
+        document.getElementById('btnSubmit').disabled = false;
+      }
+    }
+
+    function startPolling(jobId) {
+      if (pollInterval) clearInterval(pollInterval);
+      pollInterval = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/v1/jobs/${jobId}`);
+          if (!res.ok) return;
+          const task = await res.json();
+          updateUI(task);
+        } catch (err) {
+          console.error("Error en polling:", err);
+        }
+      }, 1000);
+    }
+
+    function updateUI(task) {
+      document.getElementById('progressBar').style.width = (task.progress_pct || 15) + "%";
+      document.getElementById('statusMsg').textContent = `Estado: ${task.status.toUpperCase()} (${task.progress_pct || 10}%)`;
+
+      if (task.status === 'waiting_human_approval') {
+        document.getElementById('hitlBanner').style.display = "block";
+        document.getElementById('outputBox').textContent = "PAUSA DE EJECUCIÓN: El sistema requiere validación humana para continuar.";
+      } else if (task.status === 'completed') {
+        clearInterval(pollInterval);
+        document.getElementById('hitlBanner').style.display = "none";
+        document.getElementById('btnSubmit').disabled = false;
+        document.getElementById('progressBar').style.width = "100%";
+        document.getElementById('timingBadge').textContent = `⚡ Latencia: ${task.duration_seconds || 0}s`;
+        document.getElementById('outputBox').textContent = task.result || "Completado sin texto.";
+        loadRecentTasks();
+      } else if (task.status === 'failed') {
+        clearInterval(pollInterval);
+        document.getElementById('btnSubmit').disabled = false;
+        document.getElementById('outputBox').textContent = "ERROR: " + (task.error || "Fallo en ejecución");
+        loadRecentTasks();
+      }
+    }
+
+    async function resolveHITL(approved) {
+      if (!activeJobId) return;
+      document.getElementById('hitlBanner').style.display = "none";
+      document.getElementById('statusMsg').textContent = `Enviando veredicto: ${approved ? 'APROBADO' : 'RECHAZADO'}...`;
+      try {
+        await fetch(`/api/v1/jobs/${activeJobId}/approve`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ approved: approved, feedback: approved ? "Aprobado desde Mission Control" : "Rechazado por riesgo" })
+        });
+      } catch (err) {
+        alert("Error resolviendo HITL: " + err);
+      }
+    }
+
+    async function loadRecentTasks() {
+      try {
+        const res = await fetch('/api/v1/jobs');
+        const tasks = await res.json();
+        const tbody = document.getElementById('tasksTableBody');
+        tbody.innerHTML = '';
+        if (!tasks.length) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Sin tareas.</td></tr>';
+          return;
+        }
+        tasks.forEach(t => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="font-family: monospace; font-size: 0.75rem;">${t.job_id.substring(0,8)}...</td>
+            <td>${t.query.substring(0, 40)}...</td>
+            <td><span style="color: ${t.status === 'completed' ? 'var(--success)' : t.status === 'failed' ? 'var(--danger)' : 'var(--warning)'}">${t.status}</span></td>
+            <td>${t.progress_pct || 0}%</td>
+            <td>${t.duration_seconds ? t.duration_seconds + 's' : '-'}</td>
+            <td>${t.created_at || '-'}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error("Error cargando tareas:", err);
+      }
+    }
+
+    window.onload = loadRecentTasks;
+  </script>
+</body>
+</html>

@@ -49,6 +49,13 @@ async def run_task_job(job_id: str) -> None:
         task["review_data"] = result.get("review_data") or task.get("review_data")
         task["duration_seconds"] = elapsed
 
+        from app.config import settings
+        from app.observability.finops import estimate_token_cost
+
+        p_tokens = max(50, (len(task["query"]) + len(str(task.get("research_data") or ""))) // 4)
+        c_tokens = max(50, len(str(result.get("final_summary") or "")) // 4)
+        task["finops"] = estimate_token_cost(settings.openai_model, p_tokens, c_tokens)
+
         if result.get("hitl_pending") and task.get("hitl_approved") is None:
             task["status"] = "waiting_human_approval"
             task["progress_pct"] = 70

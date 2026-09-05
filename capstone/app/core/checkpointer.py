@@ -1,4 +1,4 @@
-"""Checkpointer para LangGraph respaldado en Redis con persistencia duradera."""
+"""Checkpointer para LangGraph respaldado en Redis con TTL de 24h y persistencia duradera."""
 
 import asyncio
 import logging
@@ -18,12 +18,13 @@ logger = logging.getLogger(__name__)
 
 
 class RedisCheckpointer(BaseCheckpointSaver):
-    """Guarda y recupera checkpoints y escrituras de LangGraph en Redis."""
+    """Guarda y recupera checkpoints de LangGraph en Redis con política de TTL."""
 
-    def __init__(self, redis_client: Any, prefix: str = "checkpoint:"):
+    def __init__(self, redis_client: Any, prefix: str = "checkpoint:", ttl_seconds: int = 86400):
         super().__init__()
         self.redis = redis_client
         self.prefix = prefix
+        self.ttl = ttl_seconds
         self._mem_data: Dict[str, bytes] = {}
         self._mem_idx: Dict[str, set] = {}
 
@@ -49,20 +50,16 @@ class RedisCheckpointer(BaseCheckpointSaver):
         })
 
         try:
-            self.redis.set(key, payload)
-            self.redis.sadd(f"{self.prefix}idx:{tid}:{ns}", cid)
+            self.redis.set(key, payload, ex=self.ttl)
+            idx_key = f"{self.prefix}idx:{tid}:{ns}"
+            self.redis.sadd(idx_key, cid)
+            self.redis.expire(idx_key, self.ttl)
         except Exception as err:
-            logger.warning(f"Redis no disponible para put, usando memoria: {err}")
+            logger.warning(f"Redis fallback a memoria: {err}")
             self._mem_data[key] = payload
             self._mem_idx.setdefault(f"{tid}:{ns}", set()).add(cid)
 
-        return {
-            "configurable": {
-                "thread_id": tid,
-                "checkpoint_ns": ns,
-                "checkpoint_id": cid,
-            }
-        }
+        return {"configurable": {"thread_id": tid, "checkpoint_ns": ns, "checkpoint_id": cid}}
 
     def get_tuple(self, config: RunnableConfig) -> Optional[CheckpointTuple]:
         tid = config["configurable"]["thread_id"]
@@ -132,11 +129,9 @@ class RedisCheckpointer(BaseCheckpointSaver):
         metadata: CheckpointMetadata,
         new_versions: ChannelVersions,
     ) -> RunnableConfig:
-        """Versión asíncrona no bloqueante de put para el Event Loop."""
         return await asyncio.to_thread(self.put, config, checkpoint, metadata, new_versions)
 
     async def aget_tuple(self, config: RunnableConfig) -> Optional[CheckpointTuple]:
-        """Versión asíncrona no bloqueante de get_tuple para el Event Loop."""
         return await asyncio.to_thread(self.get_tuple, config)
 
     async def aput_writes(
@@ -145,5 +140,4 @@ class RedisCheckpointer(BaseCheckpointSaver):
         writes: Sequence[Tuple[str, Any]],
         task_id: str,
     ) -> None:
-        """Versión asíncrona no bloqueante de put_writes para el Event Loop."""
         await asyncio.to_thread(self.put_writes, config, writes, task_id)

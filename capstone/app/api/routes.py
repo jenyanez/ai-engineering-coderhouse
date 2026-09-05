@@ -1,9 +1,12 @@
 """Endpoints de la API REST asíncrona de grado de producción."""
 
+import asyncio
+import json
 import time
 import uuid
 from typing import Any, Dict, List
 from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import StreamingResponse
 from app.api.hitl import process_hitl_decision
 from app.api.store import task_store
 from app.core.state import HITLApprovalRequest, QueryRequest
@@ -36,12 +39,13 @@ async def submit_query(payload: QueryRequest) -> Dict[str, Any]:
         "session_id": session_id,
         "status": "pending",
         "poll_url": f"/api/v1/jobs/{job_id}",
+        "stream_url": f"/api/v1/jobs/{job_id}/stream",
     }
 
 
 @router.get("/jobs/{job_id}")
 async def get_job_status(job_id: str) -> Dict[str, Any]:
-    """Endpoint de sondeo (polling) para consultar el estado y resultado del trabajo."""
+    """Endpoint de sondeo (polling) para consultar el estado del trabajo."""
     task = await task_store.get_task(job_id)
     if not task:
         raise HTTPException(
@@ -49,6 +53,32 @@ async def get_job_status(job_id: str) -> Dict[str, Any]:
             detail=f"Trabajo con ID '{job_id}' no encontrado",
         )
     return task
+
+
+@router.get("/jobs/{job_id}/stream")
+async def stream_job_events(job_id: str):
+    """Streaming de eventos en vivo mediante Server-Sent Events (SSE)."""
+
+    async def event_generator():
+        last_hash = None
+        for _ in range(180):
+            task = await task_store.get_task(job_id)
+            if not task:
+                yield f"data: {json.dumps({'error': 'Job not found'})}\n\n"
+                break
+            current_hash = (
+                task.get("status"),
+                task.get("progress_pct"),
+                bool(task.get("result")),
+            )
+            if current_hash != last_hash:
+                last_hash = current_hash
+                yield f"data: {json.dumps(task)}\n\n"
+            if task.get("status") in ("completed", "failed"):
+                break
+            await asyncio.sleep(0.5)
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
 @router.post("/jobs/{job_id}/approve")

@@ -159,3 +159,23 @@ python -m tests.benchmark_suite
 
 1. **Checkpoints en Redis**: A diferencia de la pre-entrega donde se utilizó `MemorySaver()`, en este Capstone se desarrolló la clase `RedisCheckpointer` (en `app/core/checkpointer.py`) que persiste de manera duradera todas las versiones del grafo en Redis (`intelligence_checkpoint:*`).
 2. **Entorno y Dependencias Impecables**: El archivo `requirements.txt` contiene explícitamente todas las librerías necesarias (`langgraph`, `langchain-core`, `chromadb`, `httpx`, `pytest`, `arize-phoenix`, etc.) sin recurrir a dependencias transitivas ni generar incompatibilidades en instalaciones limpias sobre Python 3.12.
+
+---
+
+## ⚡ 7. Mejoras de Nivel Enterprise Implementadas
+
+1. **Correlación de Trazas por `job_id` en Arize Phoenix**:
+   - Cada ciclo de ejecución agéntica inyecta automáticamente los atributos de OpenTelemetry `app.job_id` y `session.id` en todos los spans de trazabilidad.
+   - Permite filtrar y auditar ejecuciones individuales directamente en la UI de Arize Phoenix por identificador de ticket.
+
+2. **Monitoreo FinOps y Costo en USD en Tiempo Real**:
+   - Módulo `app/observability/finops.py` calcula el desglose de tokens de prompt y completion, deduciendo el costo estimado en dólares (`$0.000176 USD`).
+   - Expuesto tanto en el contrato JSON de la API como en la tarjeta de resultados del Mission Control Dashboard.
+
+3. **TTL Automático de 24 Horas en Checkpoints de Redis**:
+   - La clase `RedisCheckpointer` configura expiración automática (`ex=86400`) en cada llave de estado y de índice (`intelligence_checkpoint:*`).
+   - Previene la saturación de memoria RAM en entornos de producción con alta concurrencia.
+
+4. **Streaming de Eventos en Vivo mediante Server-Sent Events (SSE)**:
+   - Nuevo endpoint `GET /api/v1/jobs/{job_id}/stream` con `text/event-stream` que transmite el progreso en tiempo real (`pending` ➔ `processing` ➔ `completed`).
+   - El Mission Control Dashboard se conecta por `EventSource` con fallback automático a sondeo por polling de 1s.

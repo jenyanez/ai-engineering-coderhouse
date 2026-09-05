@@ -159,6 +159,7 @@
   <script>
     let activeJobId = null;
     let pollInterval = null;
+    let eventSource = null;
 
     const PRESETS = {
       1: "¿Cuál es la proyección de mercado de IA Generativa y adopción Fortune 500 según el informe?",
@@ -171,10 +172,22 @@
       document.getElementById('queryInput').value = PRESETS[id];
     }
 
+    function cleanupStreaming() {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+      }
+      if (eventSource) {
+        eventSource.close();
+        eventSource = null;
+      }
+    }
+
     async function submitTask() {
       const query = document.getElementById('queryInput').value.trim();
       if (!query) return alert('Por favor ingresa una consulta');
 
+      cleanupStreaming();
       document.getElementById('btnSubmit').disabled = true;
       document.getElementById('outputBox').textContent = "Encolando tarea en Redis...";
       document.getElementById('progressBar').style.width = "10%";
@@ -189,11 +202,32 @@
         });
         const data = await res.json();
         activeJobId = data.job_id;
-        document.getElementById('statusMsg').textContent = `Job ID: ${activeJobId} encolado. Sondeando estado...`;
-        startPolling(activeJobId);
+        startMonitoring(activeJobId);
       } catch (err) {
         document.getElementById('outputBox').textContent = "Error al despachar: " + err;
         document.getElementById('btnSubmit').disabled = false;
+      }
+    }
+
+    function startMonitoring(jobId) {
+      if (window.EventSource) {
+        document.getElementById('statusMsg').textContent = `Job ID: ${jobId} conectado vía SSE (streaming en vivo)...`;
+        eventSource = new EventSource(`/api/v1/jobs/${jobId}/stream`);
+        eventSource.onmessage = (e) => {
+          try {
+            const task = JSON.parse(e.data);
+            updateUI(task);
+          } catch (err) {
+            console.error("Error parseando SSE:", err);
+          }
+        };
+        eventSource.onerror = () => {
+          console.warn("SSE desconectado, recurriendo a polling.");
+          cleanupStreaming();
+          startPolling(jobId);
+        };
+      } else {
+        startPolling(jobId);
       }
     }
 
@@ -219,15 +253,18 @@
         document.getElementById('hitlBanner').style.display = "block";
         document.getElementById('outputBox').textContent = "PAUSA DE EJECUCIÓN: El sistema requiere validación humana para continuar.";
       } else if (task.status === 'completed') {
-        clearInterval(pollInterval);
+        cleanupStreaming();
         document.getElementById('hitlBanner').style.display = "none";
         document.getElementById('btnSubmit').disabled = false;
-        document.getElementById('progressBar').style.width = "100%";
-        document.getElementById('timingBadge').textContent = `⚡ Latencia: ${task.duration_seconds || 0}s`;
+        if (task.finops) {
+          document.getElementById('timingBadge').innerHTML = `⚡ ${task.duration_seconds || 0}s | 🪙 ${task.finops.total_tokens} toks | 💰 $${task.finops.estimated_cost_usd} USD`;
+        } else {
+          document.getElementById('timingBadge').textContent = `⚡ Latencia: ${task.duration_seconds || 0}s`;
+        }
         document.getElementById('outputBox').textContent = task.result || "Completado sin texto.";
         loadRecentTasks();
       } else if (task.status === 'failed') {
-        clearInterval(pollInterval);
+        cleanupStreaming();
         document.getElementById('btnSubmit').disabled = false;
         document.getElementById('outputBox').textContent = "ERROR: " + (task.error || "Fallo en ejecución");
         loadRecentTasks();

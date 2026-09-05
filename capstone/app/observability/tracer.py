@@ -54,7 +54,12 @@ def trace_agent_span(agent_name: str, span_kind: str = "agent") -> Callable:
                 span.set_attribute("agent.name", agent_name)
 
                 if args and isinstance(args[0], dict):
-                    span.set_attribute("input.query", str(args[0].get("query", ""))[:300])
+                    state = args[0]
+                    span.set_attribute("input.query", str(state.get("query", ""))[:300])
+                    job_id = state.get("session_id") or state.get("job_id")
+                    if job_id:
+                        span.set_attribute("app.job_id", str(job_id))
+                        span.set_attribute("session.id", str(job_id))
 
                 try:
                     res = func(*args, **kwargs)
